@@ -31,7 +31,7 @@ Features
 --------
 
 * TODO
-- Improve tests
-- Add support for pytest
-- Create templates for admin.py and urls.py for Django
-- Separate files creations
+        - Improve tests
+        - Add support for pytest
+        - Create templates for admin.py and urls.py for Django
+        - Separate files creations
