@@ -1,4 +1,4 @@
-from create_data import DataCreator
+from ..create_data import DataCreator
 
 
 class DjangoTestingModel(DataCreator):
@@ -21,7 +21,7 @@ class DjangoTestingModel(DataCreator):
         quantity: int = 1,
         in_bulk: bool = False,
         full_all_fields: bool = True,
-        **kwargs
+        **kwargs,
     ):
         creator = cls(model, quantity, in_bulk, full_all_fields)
         if quantity > 1:
@@ -42,9 +42,8 @@ class DjangoTestingModel(DataCreator):
 
     def create_in_bulk(self, **kwargs):
         pre_objects = [
-            self.model(
-                **self.inspect_model(**kwargs)
-            ) for number in range(self.quantity)
+            self.model(**self.inspect_model(**kwargs))
+            for number in range(self.quantity)
         ]
         return self.get_model_manager().bulk_create(pre_objects)
 
@@ -80,55 +79,46 @@ class DjangoTestingModel(DataCreator):
         extra_params = {}
         if max_length:
             extra_params["max_value"] = max_length
-        return {field_name: self.generate_random_data_per_field(field_type, **extra_params)}
+        return {
+            field_name: self.generate_random_data_per_field(field_type, **extra_params)
+        }
 
-    def generate_random_data_per_field(
-        self,
-        field_type: str,
-        **kwargs
-    ):
+    def generate_random_data_per_field(self, field_type: str, **kwargs):
         data_generator = {
-            "DateTimeField": ExampleModel.create_random_datetime,
-            "DateField": ExampleModel.create_random_date,
-            "TimeField": ExampleModel.create_random_hour,
-            # "DurationField": ExampleModel.create(),
-            # "AutoField": ExampleModel.create(),
-            # "BigAutoField": ExampleModel.create(),
-            # "SmallAutoField": ExampleModel.create(),
-            # "BinaryField": ExampleModel.create(),
-            # "CommaSeparatedIntegerField": ExampleModel.create(),
-            "DecimalField": ExampleModel.create_random_float, #(),
-            "FloatField": ExampleModel.create_random_float, #(),
-            "BigIntegerField": ExampleModel.create_random_integer, #(min_value=10000),
-            "PositiveBigIntegerField": ExampleModel.create_random_positive_integer, #(min_value=10000),
-            "PositiveIntegerField": ExampleModel.create_random_positive_integer, #(),
-            "PositiveSmallIntegerField": ExampleModel.create_random_positive_integer, #(max_value=10000),
-            "IntegerField": ExampleModel.create_random_integer, #(),
-            "SmallIntegerField": ExampleModel.create_random_integer, #(max_value=10000),
-
-            "CharField": ExampleModel.create_random_string,
-            "TextField": ExampleModel.create_random_text,
-            "SlugField": ExampleModel.create_random_slug,
-
-            "URLField": ExampleModel.create_random_url,
-            "UUIDField": ExampleModel.create_random_uuid,
-            "EmailField": ExampleModel.create_random_email,
-
-            # "Empty": ExampleModel.create(),
-            # "Field": ExampleModel.create(),
-            # "NOT_PROVIDED": ExampleModel.create(),
-
-            # "FilePathField": ExampleModel.create(),
+            "DateTimeField": DjangoTestingModel.create_random_datetime,
+            "DateField": DjangoTestingModel.create_random_date,
+            "TimeField": DjangoTestingModel.create_random_hour,
+            # "DurationField": DjangoTestingModel.create(),
+            # "AutoField": DjangoTestingModel.create(),
+            # "BigAutoField": DjangoTestingModel.create(),
+            # "SmallAutoField": DjangoTestingModel.create(),
+            # "BinaryField": DjangoTestingModel.create(),
+            # "CommaSeparatedIntegerField": DjangoTestingModel.create(),
+            "DecimalField": DjangoTestingModel.create_random_float,  # (),
+            "FloatField": DjangoTestingModel.create_random_float,  # (),
+            "BigIntegerField": DjangoTestingModel.create_random_integer,  # (min_value=10000),
+            "PositiveBigIntegerField": DjangoTestingModel.create_random_positive_integer,  # (min_value=10000),
+            "PositiveIntegerField": DjangoTestingModel.create_random_positive_integer,  # (),
+            "PositiveSmallIntegerField": DjangoTestingModel.create_random_positive_integer,  # (max_value=10000),
+            "IntegerField": DjangoTestingModel.create_random_integer,  # (),
+            "SmallIntegerField": DjangoTestingModel.create_random_integer,  # (max_value=10000),
+            "CharField": DjangoTestingModel.create_random_string,
+            "TextField": DjangoTestingModel.create_random_text,
+            "SlugField": DjangoTestingModel.create_random_slug,
+            "URLField": DjangoTestingModel.create_random_url,
+            "UUIDField": DjangoTestingModel.create_random_uuid,
+            "EmailField": DjangoTestingModel.create_random_email,
+            # "Empty": DjangoTestingModel.create(),
+            # "Field": DjangoTestingModel.create(),
+            # "NOT_PROVIDED": DjangoTestingModel.create(),
+            # "FilePathField": DjangoTestingModel.create(),
             "FileField": self.return_none_by_now,
             "ImageField": self.return_none_by_now,
-            "JSONField": ExampleModel.create_random_json,
-
-            # "GenericIPAddressField": ExampleModel.create(),
-            # "IPAddressField": ExampleModel.create(),
-
-            "BooleanField": ExampleModel.create_random_bool,
-            "NullBooleanField": ExampleModel.create_random_bool,
-
+            "JSONField": DjangoTestingModel.create_random_json,
+            # "GenericIPAddressField": DjangoTestingModel.create(),
+            # "IPAddressField": DjangoTestingModel.create(),
+            "BooleanField": DjangoTestingModel.create_random_bool,
+            "NullBooleanField": DjangoTestingModel.create_random_bool,
             "ForeignKey": self.return_none_by_now,
             "OneToOneField": self.return_none_by_now,
             "ManyToManyField": self.return_none_by_now,

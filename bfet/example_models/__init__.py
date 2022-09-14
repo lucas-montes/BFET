@@ -1,3 +1,5 @@
-from .django_model import DjangoTestingModel as DTM
+from .django_model import DjangoTestingModel
 
-__all__ = ["DTM"]
+__all__ = [
+    "DjangoTestingModel",
+]
