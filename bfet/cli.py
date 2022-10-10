@@ -1,17 +1,49 @@
-"""Console script for bfet."""
+"""Command line for bfet"""
 import argparse
 import sys
 
 
-def main():
-    """Console script for bfet."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument("_", nargs="*")
-    args = parser.parse_args()
+from typing import Dict, Union
 
-    print("Arguments: " + str(args._))
-    print("Replace this message by putting your code into bfet.cli.main")
-    return 0
+
+def analyse_args(args: Dict[str, Union[str, bool]]):
+    modules = args.get("modules")
+    testing_library = args.get("testing-library")
+    coverage = args.get("coverage")
+
+    print(modules)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "-m",
+        "--modules",
+        nargs="?",
+        help=(
+            "A list of modules to create tests from. If no module is provided, a test"
+            " is created for everything."
+        ),
+    )
+
+    parser.add_argument(
+        "-tl",
+        "--testing-library",
+        nargs="?",
+        default="pytest",
+        choices=["pytest", "unittest", "nose"],
+        help="The library used to run the tests. The default is set to pytest",
+    )
+
+    parser.add_argument(
+        "-c",
+        "--coverage",
+        action="store_true",
+        help="Create coverage for the tests ran.",
+    )
+
+    analyse_args(vars(parser.parse_args()))
 
 
 if __name__ == "__main__":

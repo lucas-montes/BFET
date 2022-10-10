@@ -8,7 +8,7 @@ class ConfigFiles:
     root_folder = os.getcwd()
     apps_folder = Path(__file__).parent.resolve()
     base_config_parser = configparser.ConfigParser()
-    settings_name = "autotest"
+    settings_name = "bfet"
     settings_file = "setup.cfg"
     default_file_namig = "test_*"
     default_class_naming = "Test*"
