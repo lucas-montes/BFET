@@ -1,10 +1,11 @@
-from typing import List, Dict, Callable
-import os
-from pathlib import Path
 import importlib
 import importlib.util
-import sys
 import inspect
+import os
+from pathlib import Path
+import sys
+from typing import Callable, Dict, List
+
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -126,15 +127,9 @@ class CreateTests:
         app_name = tests_info["app_name"]
         for file in tests_info["files_to_test"]:
             test_file_name = self.file_namig.replace("*", file)
-            if not os.path.exists(
-                f'{tests_info["test_folder_path"]}/{test_file_name}.py'
-            ):
+            if not os.path.exists(f'{tests_info["test_folder_path"]}/{test_file_name}.py'):
                 module_name = f"{app_name}.{file}"
-                output_from_parsed_template = self.create_test_content(
-                    module_name, file
-                )
-                with open(
-                    f'{tests_info["test_folder_path"]}/{test_file_name}.py', "w"
-                ) as f:
+                output_from_parsed_template = self.create_test_content(module_name, file)
+                with open(f'{tests_info["test_folder_path"]}/{test_file_name}.py', "w") as f:
                     f.write(output_from_parsed_template)
                     f.close()

@@ -1,7 +1,5 @@
 """Command line for bfet"""
 import argparse
-import sys
-
 from typing import Dict, Union
 
 
@@ -9,8 +7,12 @@ def analyse_args(args: Dict[str, Union[str, bool]]):
     modules = args.get("modules")
     testing_library = args.get("testing-library")
     coverage = args.get("coverage")
-
-    print(modules)
+    if modules:
+        pass
+    if testing_library:
+        pass
+    if coverage:
+        pass
 
 
 def cli():

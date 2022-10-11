@@ -1,12 +1,11 @@
-import os
 import importlib
 import importlib.util
-import sys
 import inspect
-import types
-
-from typing import List, Dict, Type, Tuple
+import os
 from pathlib import Path
+import sys
+import types
+from typing import Dict, List, Tuple, Type
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -85,7 +84,8 @@ class CreateTests(ConfigFiles):
         Returns
         -------
             list_methods: List[Tuple[str, types.FunctionType]]
-                A list of tuples with the name of the methods that the class passed has and the method itself
+                A list of tuples with the name of the methods that the class
+                passed has and the method itself
 
         Example
         -------
@@ -94,7 +94,8 @@ class CreateTests(ConfigFiles):
                     return "Mine"
 
             If we pass DummyObject to get_class_methods,
-            the result that we'll get would be [("first", <function DummyObject.first at 0x7f12088c1ea0>)]
+            the result that we'll get would be
+            [("first", <function DummyObject.first at 0x7f12088c1ea0>)]
         """
         list_methods = []
         methods = inspect.getmembers(_class, predicate=inspect.isroutine)
@@ -114,8 +115,8 @@ class CreateTests(ConfigFiles):
         Returns
         -------
             _type_
-                We return the class that owns the method received. We check if the method comes from an inherited class
-                or not.
+                We return the class that owns the method received.
+                We check if the method comes from an inherited class or not.
         """
         if inspect.ismethod(method):
             for cls in inspect.getmro(method.__self__.__class__):
@@ -159,15 +160,9 @@ class CreateTests(ConfigFiles):
         app_name = tests_info["app_name"]
         for file in tests_info["files_to_test"]:
             test_file_name = self.file_namig.replace("*", file)
-            if not os.path.exists(
-                f'{tests_info["test_folder_path"]}/{test_file_name}.py'
-            ):
+            if not os.path.exists(f'{tests_info["test_folder_path"]}/{test_file_name}.py'):
                 module_name = f"{app_name}.{file}"
-                output_from_parsed_template = self.create_test_content(
-                    module_name, file
-                )
-                with open(
-                    f'{tests_info["test_folder_path"]}/{test_file_name}.py', "w"
-                ) as f:
+                output_from_parsed_template = self.create_test_content(module_name, file)
+                with open(f'{tests_info["test_folder_path"]}/{test_file_name}.py', "w") as f:
                     f.write(output_from_parsed_template)
                     f.close()

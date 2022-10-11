@@ -60,13 +60,12 @@ class TestingModel(models.Model):
         pass
 
     try:
-        from django.contrib.postgres.fields import ArrayField, HStoreField
-        from django.contrib.postgres.fields import JSONField as PostgresJSONField
-        from django.contrib.postgres.fields.citext import (
-            CICharField,
-            CIEmailField,
-            CITextField,
+        from django.contrib.postgres.fields import (
+            ArrayField,
+            HStoreField,
+            JSONField as PostgresJSONField,
         )
+        from django.contrib.postgres.fields.citext import CICharField, CIEmailField, CITextField
         from django.contrib.postgres.fields.ranges import (
             BigIntegerRangeField,
             DateRangeField,

@@ -1,7 +1,7 @@
-from typing import List
-import os
 import configparser
+import os
 from pathlib import Path
+from typing import List
 
 
 class ConfigFiles:
@@ -26,21 +26,13 @@ class ConfigFiles:
             # of the setup.cfg settings for bfet
             return
         else:
-            self.files_to_include = self.get_files_to(
-                "include", self.default_files_to_include
-            )
-            self.file_namig = self.config_parser.get(
-                "file_namig", self.default_file_namig
-            )
-            self.class_naming = self.config_parser.get(
-                "class_naming", self.default_class_naming
-            )
+            self.files_to_include = self.get_files_to("include", self.default_files_to_include)
+            self.file_namig = self.config_parser.get("file_namig", self.default_file_namig)
+            self.class_naming = self.config_parser.get("class_naming", self.default_class_naming)
             self.function_namig = self.config_parser.get(
                 "function_namig", self.default_function_namig
             )
-            self.files_to_exclude = self.get_files_to(
-                "exclude", self.default_files_to_exclude
-            )
+            self.files_to_exclude = self.get_files_to("exclude", self.default_files_to_exclude)
 
     def get_files_to(self, what_to_do: str, default: str) -> List:
         files_to = self.config_parser.get(what_to_do, default)

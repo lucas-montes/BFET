@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import uuid
 import datetime
+import uuid
 
 from bfet import DataCreator
 

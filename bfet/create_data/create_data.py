@@ -1,10 +1,9 @@
-from typing import Dict
-
-import uuid
+import datetime
 import random
 import string
-import datetime
 import textwrap
+from typing import Dict
+import uuid
 
 from .constants import LIST_EMAIL_DOMAINS, LOREM_TEXT
 
@@ -80,9 +79,7 @@ class DataCreator:
         return uuids[kind](**kwargs)
 
     @staticmethod
-    def create_random_date(
-        day: int = None, month: int = None, year: int = None
-    ) -> datetime.date:
+    def create_random_date(day: int = None, month: int = None, year: int = None) -> datetime.date:
         month = month if month else random.randint(1, 12)
         if month == 2:
             max_day = 28
@@ -129,15 +126,11 @@ class DataCreator:
         return fnct(min_value, max_value)
 
     @staticmethod
-    def create_random_negative_integer(
-        min_value: int = 0, max_value: int = 10000000
-    ) -> int:
+    def create_random_negative_integer(min_value: int = 0, max_value: int = 10000000) -> int:
         return random.randint(min_value, max_value) * -1
 
     @staticmethod
-    def create_random_positive_integer(
-        min_value: int = 0, max_value: int = 10000000
-    ) -> int:
+    def create_random_positive_integer(min_value: int = 0, max_value: int = 10000000) -> int:
         return random.randint(min_value, max_value)
 
     @staticmethod
