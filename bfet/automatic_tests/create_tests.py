@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import sys
 import types
-from typing import Dict, List, Tuple, Type
+from typing import Dict, List, Tuple, Type, Any
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -29,18 +29,18 @@ class CreateTests(ConfigFiles):
         """
         test_info = {}
         if app:
-            path = Path(importlib.import_module(app).__file__).parent.resolve()
+            path = Path(importlib.import_module(app).__file__).parent.resolve()  # type: ignore
             test_info.update({"app_name": app})
         if folder_path:
-            path = folder_path
+            path = folder_path  # type: ignore
         if not folder_path and not app:
-            path = os.getcwd()
+            path = os.getcwd()  # type: ignore
 
-        test_info.update({"module_path": path, "files_to_test": []})
+        test_info.update({"module_path": path, "files_to_test": []})  # type: ignore
         for file in os.listdir(path):
             file_name = file.split(".")[0]
             if file_name in self.files_to_include:
-                test_info["files_to_test"].append(file_name)
+                test_info["files_to_test"].append(file_name)  # type: ignore
             if file.startswith("test"):
                 if Path(f"{path}/{file}").is_file():
                     test_folder_path = self.create_tests_folder(path, file)
@@ -53,7 +53,7 @@ class CreateTests(ConfigFiles):
         test_info.update({"test_folder_path": test_folder_path})
         return test_info
 
-    def create_tests_folder(self, path: Path, file: bytes = b"") -> str:
+    def create_tests_folder(self, path: Path, file: str = "") -> str:
         """
         Creates a test folder with and __init__ file
         If there is a file named test alone it moves it to the new tests dir
@@ -104,7 +104,7 @@ class CreateTests(ConfigFiles):
                 list_methods.append(method)
         return list_methods
 
-    def get_class_that_defined_method(self, method: types.FunctionType) -> Type:
+    def get_class_that_defined_method(self, method: types.FunctionType) -> Type:  # type: ignore
         """We retrieve the real class that owns the method
 
         Parameters
@@ -124,7 +124,7 @@ class CreateTests(ConfigFiles):
                     return cls
             method = method.__func__  # fallback to __qualname__ parsing
         if inspect.isfunction(method):
-            cls = getattr(
+            cls = getattr(  # type: ignore
                 inspect.getmodule(method),
                 method.__qualname__.split(".<locals>", 1)[0].rsplit(".", 1)[0],
                 None,
@@ -145,14 +145,17 @@ class CreateTests(ConfigFiles):
         }
         clases = self.get_class_in_file(module_name)
         for clase in clases:
-            template_data["imports"].append(clase[0])
+            template_data["imports"].append(clase[0])  # type: ignore
             methods = self.get_class_methods(clase[1])
             class_naming = self.class_naming.replace("*", clase[0])
-            clase_dict = {"class_naming": class_naming, "functions": []}
+            clase_dict = {  # type: ignore
+                "class_naming": class_naming,
+                "functions": [],
+            }
             for method in methods:
                 function_namig = self.function_namig.replace("*", method[0])
-                clase_dict["functions"].append({"function_namig": function_namig})
-            template_data["clases"].append(clase_dict)
+                clase_dict["functions"].append({"function_namig": function_namig})  # type: ignore
+            template_data["clases"].append(clase_dict)  # type: ignore
         return template.render(**template_data)
 
     def create_test_file(self, tests_info: dict):

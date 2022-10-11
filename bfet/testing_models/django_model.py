@@ -1,3 +1,5 @@
+from typing import Type, Dict
+
 from ..create_data import DataCreator
 
 
@@ -32,7 +34,7 @@ class DjangoTestingModel(DataCreator):
         else:
             return creator.create_model(**kwargs)
 
-    def get_model_manager(self) -> type:
+    def get_model_manager(self) -> Type:
         try:
             manager = self.model._default_manager
         except AttributeError:
@@ -46,12 +48,12 @@ class DjangoTestingModel(DataCreator):
         ]
         return self.get_model_manager().bulk_create(pre_objects)
 
-    def create_model(self, **kwargs) -> type:
+    def create_model(self, **kwargs) -> Type:
         model_data = self.inspect_model(**kwargs)
         kwargs.update(model_data)
         return self.get_model_manager().create(**kwargs)
 
-    def inspect_model(self, **kwargs) -> dict:
+    def inspect_model(self, **kwargs) -> Dict:
         fields_info = dict()
         # all_model_fields = model._meta.get_fields()
         for field in self.model._meta.fields:
@@ -71,7 +73,7 @@ class DjangoTestingModel(DataCreator):
 
         return fields_info
 
-    def inspect_field(self, field: type, field_name: str) -> dict:
+    def inspect_field(self, field: Type, field_name: str) -> Dict:
         field_type = field.get_internal_type()
         field_specs = field.__dict__
         max_length = field_specs.get("max_length")
@@ -122,7 +124,7 @@ class DjangoTestingModel(DataCreator):
             "OneToOneField": self.return_none_by_now,
             "ManyToManyField": self.return_none_by_now,
         }
-        return data_generator[field_type](**kwargs)
+        return data_generator[field_type](**kwargs)  # type: ignore
 
     def return_none_by_now(self, **kwargs):
         return None

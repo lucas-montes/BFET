@@ -42,10 +42,10 @@ class DataCreator:
             4: DataCreator.create_random_float(),
         }
         for index in range(3):
-            key = random.randint(1, 4)
-            value = random.randint(1, 4)
-            key = choices[key]
-            value = choices[value]
+            variable_key = random.randint(1, 4)
+            variable_value = random.randint(1, 4)
+            key = choices[variable_key]
+            value = choices[variable_value]
             random_dict[f"{key}"] = value
         return random_dict
 
@@ -76,7 +76,7 @@ class DataCreator:
     @staticmethod
     def create_random_uuid(kind: int = 4, **kwargs) -> uuid.UUID:
         uuids = {1: uuid.uuid1, 3: uuid.uuid3, 4: uuid.uuid4, 5: uuid.uuid5}
-        return uuids[kind](**kwargs)
+        return uuids[kind](**kwargs)  # type: ignore
 
     @staticmethod
     def create_random_date(day: int = None, month: int = None, year: int = None) -> datetime.date:

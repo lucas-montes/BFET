@@ -1,6 +1,6 @@
 APPS_FOLDERS=bfet tests
 
-.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint check flake8 black check-black isort check-isort mypy
+.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint check lint/flake8 lint/black lint/check-black lint/isort lint/check-isort lint/mypy
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -49,29 +49,29 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-isort:
+lint/isort:
 	isort ${APPS_FOLDERS}
 
-check-isort:
+lint/check-isort:
 	isort --df -c ${APPS_FOLDERS}
 
-mypy: ## check types with mypy
+lint/mypy: ## check types with mypy
 	mypy ${APPS_FOLDERS}
 
-flake8: ## check style with flake8
+lint/flake8: ## check style with flake8
 	flake8 ${APPS_FOLDERS}
 
-black: ## run style fixing with black
+lint/black: ## run style fixing with black
 	black ${APPS_FOLDERS}
 
-check-black: ## check style with black
+lint/check-black: ## check style with black
 	black --check ${APPS_FOLDERS}
 
 lint: ## fix style
-	make flake8 make black
+	lint/isort lint/black
 
 check: ## check style
-	flake8 isort-check check-black 
+	lint/flake8 lint/isort-check lint/check-black lint/mypy
 
 test: ## run tests quickly with the default Python
 	pytest
