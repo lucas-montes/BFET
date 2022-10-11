@@ -29,8 +29,14 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements_dev.txt tox-gh-actions
       
-    - name: Run check
-      run: make check
+    - name: Run flake8
+      run: flake8 bfet tests
+    
+    - name: Run mypy
+      run: mypy bfet tests
+    
+    - name: Run black
+      run: black bfet tests
       
     - name: Run tests
       run: make test-all
