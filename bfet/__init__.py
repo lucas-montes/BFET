@@ -1,5 +1,5 @@
 from bfet.create_data import DataCreator
-from bfet.example_models import DjangoTestingModel
+from bfet.testing_models import DjangoTestingModel
 
 __author__ = """Lucas Montes"""
 

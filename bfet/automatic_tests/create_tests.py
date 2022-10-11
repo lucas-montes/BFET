@@ -1,14 +1,19 @@
-from typing import List, Dict, Callable
 import os
-from pathlib import Path
 import importlib
 import importlib.util
 import sys
 import inspect
+import types
+
+from typing import List, Dict, Type, Tuple
+from pathlib import Path
+
 from jinja2 import Environment, FileSystemLoader
 
+from .settings import ConfigFiles
 
-class CreateTests:
+
+class CreateTests(ConfigFiles):
     """
     In this class is where the test files, class and functions are created
     """
@@ -69,20 +74,48 @@ class CreateTests:
             lambda member: inspect.isclass(member) and member.__module__ == module_name,
         )
 
-    def get_class_methods(self, clase):
-        """
-        We get all the methods of a class, excluding the built-ins and the inheritated
+    def get_class_methods(self, _class: Type) -> List[Tuple[str, types.FunctionType]]:
+        """We get all the methods of a class, excluding the built-ins and the inheritated
+
+        Parameters
+        ----------
+            _class: Type
+                A class that we want to get his methods to create tests from
+
+        Returns
+        -------
+            list_methods: List[Tuple[str, types.FunctionType]]
+                A list of tuples with the name of the methods that the class passed has and the method itself
+
+        Example
+        -------
+            class DummyObject:
+                def first(self):
+                    return "Mine"
+
+            If we pass DummyObject to get_class_methods,
+            the result that we'll get would be [("first", <function DummyObject.first at 0x7f12088c1ea0>)]
         """
         list_methods = []
-        methods = inspect.getmembers(clase, predicate=inspect.isroutine)
+        methods = inspect.getmembers(_class, predicate=inspect.isroutine)
         for method in methods:
-            if self.get_class_that_defined_method(method[1]) == clase:
+            if self.get_class_that_defined_method(method[1]) == _class:
                 list_methods.append(method)
         return list_methods
 
-    def get_class_that_defined_method(self, method: Callable):
-        """
-        We retrieve the real class that owns the method
+    def get_class_that_defined_method(self, method: types.FunctionType) -> Type:
+        """We retrieve the real class that owns the method
+
+        Parameters
+        ----------
+            method : types.FunctionType
+                We recieve a method from a class
+
+        Returns
+        -------
+            _type_
+                We return the class that owns the method received. We check if the method comes from an inherited class
+                or not.
         """
         if inspect.ismethod(method):
             for cls in inspect.getmro(method.__self__.__class__):

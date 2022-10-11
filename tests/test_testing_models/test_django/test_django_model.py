@@ -2,7 +2,7 @@ import pytest
 
 from bfet import DjangoTestingModel
 
-from ...django_pruebas.models import FKTestingModel
+from ...django_examples.models import FKTestingModel
 
 
 @pytest.mark.django_db

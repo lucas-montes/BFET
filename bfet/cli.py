@@ -2,7 +2,6 @@
 import argparse
 import sys
 
-
 from typing import Dict, Union
 
 
@@ -14,7 +13,7 @@ def analyse_args(args: Dict[str, Union[str, bool]]):
     print(modules)
 
 
-def main():
+def cli():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -43,8 +42,11 @@ def main():
         help="Create coverage for the tests ran.",
     )
 
+    parser.add_argument(
+        "-cs",
+        "--create-settings",
+        action="store_true",
+        help="Create the defaults settings if there.",
+    )
+
     analyse_args(vars(parser.parse_args()))
-
-
-if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover

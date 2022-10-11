@@ -1,6 +1,8 @@
 import os
 
+import pytest
 import django
+
 from django.conf import settings
 
 
@@ -9,7 +11,7 @@ def pytest_configure():
     installed_apps = [
         "django.contrib.contenttypes",
         "django.contrib.auth",
-        "tests.django_pruebas",
+        "tests.django_examples",
     ]
 
     using_postgres_flag = False
