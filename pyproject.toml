@@ -1,4 +1,4 @@
 [tool.black]
-target-version = ['py38']
+target-version = ['py38', 'py39', 'py310']
 preview = true
 line-length = 100
