@@ -68,10 +68,10 @@ check-black: ## check style with black
 	black --check ${APPS_FOLDERS}
 
 lint: ## fix style
-	flake8 black
+	make flake8 make black
 
 check: ## check style
-	flake8 isort-check check-black 
+	make flake8 make isort-check make check-black 
 
 test: ## run tests quickly with the default Python
 	pytest
