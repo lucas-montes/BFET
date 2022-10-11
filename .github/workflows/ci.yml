@@ -1,42 +1,88 @@
 name: CI
 
 on:
+  workflow_dispatch:
+    inputs:
+      maxAttempts:
+        required: true
+        type: number
+        default: 3
+      rerunFailedOnly:
+        required: true
+        type: boolean
+        default: 'true'
   push:
     branches:
     - main
     - feature/*
     - bugfix/*
 
+env:
+  # You can hardcode this instead of passing it in from inputs
+  maxAttempts: ${{ github.event.inputs.maxAttempts }}
+  rerunFailedOnly: ${{ github.event.inputs.rerunFailedOnly }}
+
 jobs:
-  test:
+  push-pipeline:
     name: Test on python ${{ matrix.python-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         python-version: ["3.9", "3.10"]
         os: [ubuntu-latest, windows-latest, macOS-latest]
-    
+    outputs:
+      nextAttempt: ${{ steps.set_output_variables.outputs.nextAttempt }}
+      maxAttempts: ${{ steps.set_output_variables.outputs.maxAttempts }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-
     - name: Update pip
       run: python -m pip install --upgrade pip
-        
     - name: Install dependencies
       run: pip install -r requirements_dev.txt tox-gh-actions
-      
     - name: Run flake8
       run: flake8 bfet tests
-    
     - name: Run mypy
       run: mypy bfet tests
-    
     - name: Run black
       run: black bfet tests
-      
     - name: Run tests
       run: make test
+  
+  rerun_workflow_job:
+    name: Rerun ${{ github.run_id }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10"]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    needs: push-pipeline
+    if: failure() && ( needs.push-pipeline.outputs.nextAttempt <= needs.push-pipeline.outputs.maxAttempts )
+    env:
+      attempt: ${{ needs.push-pipeline.outputs.nextAttempt }}
+    steps:
+      - name: "Trigger Attempt ${{ needs.push-pipeline.outputs.nextAttempt }}"
+        shell: pwsh
+        env:
+          # GITHUB_TOKEN with actions: write will NOT work
+          # PAT Token must have workflow scope
+          GH_CLI_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          echo "Running gh auth login..."
+          $env:GH_CLI_TOKEN | gh auth login --with-token
+          if(!$?) { exit 1 }
+          echo "Triggering rerun attempt $env:nextAttempt"
+          echo "
+          gh workflow run ci.yml
+            --raw-field runId=$env:GITHUB_RUN_ID
+            --raw-field rerunFailedOnly=$env:rerunFailedOnly
+            --repo $env:GITHUB_REPOSITORY
+          "
+          gh workflow run ci.yml `
+            --raw-field runId=$env:GITHUB_RUN_ID `
+            --raw-field rerunFailedOnly=$env:rerunFailedOnly `
+            --repo $env:GITHUB_REPOSITORY
+          if(!$?) { exit 1 }
