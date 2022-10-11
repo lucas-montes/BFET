@@ -6,7 +6,7 @@ BFET
 .. image:: https://img.shields.io/pypi/v/bfet.svg
         :target: https://pypi.python.org/pypi/bfet
 
-.. image:: https://github.com/lluc2397/bfet/actions/workflows/ci.yml/bfet.svg
+.. image:: https://github.com/lluc2397/bfet/actions/workflows/ci.yml/badge.svg
         :target: https://github.com/lluc2397/bfet/actions/workflows/ci.yml
 
 .. image:: https://readthedocs.org/projects/bfet/badge/?version=latest

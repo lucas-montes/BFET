@@ -68,10 +68,14 @@ lint/check-black: ## check style with black
 	black --check ${APPS_FOLDERS}
 
 lint: ## fix style
-	lint/isort lint/black
+	isort ${APPS_FOLDERS}
+	black ${APPS_FOLDERS}
 
 check: ## check style
-	lint/flake8 lint/isort-check lint/check-black lint/mypy
+	flake8 ${APPS_FOLDERS}
+	isort --df -c ${APPS_FOLDERS}
+	black --check ${APPS_FOLDERS} 
+	mypy ${APPS_FOLDERS}
 
 test: ## run tests quickly with the default Python
 	pytest
