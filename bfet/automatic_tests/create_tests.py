@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import sys
 import types
-from typing import Dict, List, Tuple, Type, Any
+from typing import Dict, List, Tuple, Type
 
 from jinja2 import Environment, FileSystemLoader
 
