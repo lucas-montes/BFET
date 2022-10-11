@@ -59,7 +59,7 @@ lint/mypy: ## check types with mypy
 	mypy ${APPS_FOLDERS}
 
 lint/flake8: ## check style with flake8
-	flake8 ${APPS_FOLDERS}
+	flake8 ${APPS_FOLDERS} -show-source --statistics
 
 lint/black: ## run style fixing with black
 	black ${APPS_FOLDERS}
