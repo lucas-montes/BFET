@@ -1,4 +1,4 @@
-from typing import Dict, Type, Union, List
+from typing import Dict, List, Type, Union
 
 from ..create_data import DataCreator
 
