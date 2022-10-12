@@ -1,31 +1,61 @@
-from typing import Dict, Type
+from typing import Dict, Type, Union, List
 
 from ..create_data import DataCreator
 
 
 class DjangoTestingModel(DataCreator):
     def __init__(
-        self,
-        model,
-        quantity: int,
-        in_bulk: bool,
-        full_all_fields: bool,
+        self, model, quantity: int, in_bulk: bool, fill_all_fields: bool, force_create: bool
     ) -> None:
         self.model = model
         self.quantity = quantity
         self.in_bulk = in_bulk
-        self.full_all_fields = full_all_fields
+        self.fill_all_fields = fill_all_fields
+        self.force_create = force_create
 
     @classmethod
     def create(
         cls,
-        model,
+        model: Type,
         quantity: int = 1,
         in_bulk: bool = False,
-        full_all_fields: bool = True,
+        fill_all_fields: bool = True,
+        force_create: bool = False,
         **kwargs,
-    ):
-        creator = cls(model, quantity, in_bulk, full_all_fields)
+    ) -> Union[Type, List[Type]]:
+        """The method to call when we want to create one or more instances
+        TODO
+        Create and raise an error if in_bulk or quantity > 1 and force_create is set to True
+        and instances can't be created without repeating a given field
+
+        Parameters
+        ----------
+            model : Type
+                The model that we want to use to create the instances from
+
+            quantity : int, optional
+                The number of instances that we want to create, by default 1
+
+            in_bulk : bool, optional
+                Boolean to use the bulk_create built-in of Django, by default False
+
+            fill_all_fields : bool, optional
+                Boolean to tell if all the fields must be filled or it's better to leave them blank
+                (if possible), by default True
+
+            force_create : bool, optional
+                Boolean to indicate, if any field is manually filled, it has to perform
+                a get_or_create instead of create, by default False
+
+            kwargs : Dict[str, Any]
+                Fields of the model that we want to manually fill
+
+        Returns
+        -------
+            Union[Type, List[Type]]
+                An instance or a list of instances created
+        """
+        creator = cls(model, quantity, in_bulk, fill_all_fields, force_create)
         if quantity > 1:
             if in_bulk:
                 return creator.create_in_bulk(**kwargs)
@@ -51,7 +81,12 @@ class DjangoTestingModel(DataCreator):
     def create_model(self, **kwargs) -> Type:
         model_data = self.inspect_model(**kwargs)
         kwargs.update(model_data)
-        return self.get_model_manager().create(**kwargs)
+        model_manager = self.get_model_manager()
+        if self.force_create:
+            return model_manager.create(**kwargs)
+        else:
+            model, created = model_manager.get_or_create(**kwargs)
+            return model
 
     def inspect_model(self, **kwargs) -> Dict:
         fields_info = dict()
@@ -63,7 +98,7 @@ class DjangoTestingModel(DataCreator):
             if field_name in kwargs:
                 fields_info[field_name] = kwargs.pop(field_name)
             else:
-                if self.full_all_fields is False:
+                if self.fill_all_fields is False:
                     field_allow_null = field.__dict__.get("null")
                     if field_allow_null and field_allow_null is True:
                         fields_info.update({field_name: None})
