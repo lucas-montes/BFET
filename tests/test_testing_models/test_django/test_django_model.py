@@ -13,6 +13,15 @@ class TestDjangoTestingModel:
 
     def test_model_create(self):
         assert FKTestingModel.objects.all().count() == 0
+        new_objs = DjangoTestingModel.create(FKTestingModel, name="prueba")
         new_obj = DjangoTestingModel.create(FKTestingModel, name="prueba")
         assert FKTestingModel.objects.all().count() == 1
         assert new_obj.name == "prueba"
+
+    def test_model_get_or_create(self):
+        assert FKTestingModel.objects.all().count() == 0
+        new_obj = DjangoTestingModel.create(FKTestingModel, name="prueba")
+        assert FKTestingModel.objects.all().count() == 1
+        assert new_obj.name == "prueba"
+        duplicated_obj = DjangoTestingModel.create(FKTestingModel, name="prueba")
+        assert new_obj == duplicated_obj

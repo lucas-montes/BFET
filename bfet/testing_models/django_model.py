@@ -80,12 +80,12 @@ class DjangoTestingModel(DataCreator):
 
     def create_model(self, **kwargs) -> Type:
         model_data = self.inspect_model(**kwargs)
-        kwargs.update(model_data)
         model_manager = self.get_model_manager()
         if self.force_create:
+            kwargs.update(model_data)
             return model_manager.create(**kwargs)
         else:
-            model, created = model_manager.get_or_create(**kwargs)
+            model, created = model_manager.get_or_create(**kwargs, defaults=model_data)
             return model
 
     def inspect_model(self, **kwargs) -> Dict:
