@@ -6,7 +6,7 @@ flake8
 flake8-isort
 tox==3.14.0
 coverage==4.5.4
-Sphinx==1.8.5
+Sphinx
 twine==1.14.0
 pytest-django
 pytest
