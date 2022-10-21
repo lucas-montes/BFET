@@ -1,7 +1,7 @@
-from bfet import DjangoTestingModel
-
-from django.test import TestCase
 from django.db import models
+from django.test import TestCase
+
+from bfet import DjangoTestingModel
 
 
 class BarModel(models.Model):
