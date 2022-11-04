@@ -72,6 +72,7 @@ lint: ## fix style
 	black ${APPS_FOLDERS}
 
 check: ## check style
+	twine check dist/*
 	flake8 ${APPS_FOLDERS}
 	isort --df -c ${APPS_FOLDERS}
 	black --check ${APPS_FOLDERS} 

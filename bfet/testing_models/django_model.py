@@ -55,14 +55,34 @@ class DjangoTestingModel(DataCreator):
             Union[Type, List[Type]]
                 An instance or a list of instances created
         """
-        creator = cls(model, quantity, in_bulk, fill_all_fields, force_create)
         if quantity > 1:
             if in_bulk:
-                return creator.create_in_bulk(**kwargs)
+                return cls(
+                    model,
+                    quantity,
+                    in_bulk,
+                    fill_all_fields,
+                    force_create,
+                ).create_in_bulk(**kwargs)
             else:
-                return [creator.create_model(**kwargs) for number in range(quantity)]
+                return [
+                    cls(
+                        model,
+                        quantity,
+                        in_bulk,
+                        fill_all_fields,
+                        force_create,
+                    ).create_model(**kwargs)
+                    for number in range(quantity)
+                ]
         else:
-            return creator.create_model(**kwargs)
+            return cls(
+                model,
+                quantity,
+                in_bulk,
+                fill_all_fields,
+                force_create,
+            ).create_model(**kwargs)
 
     def get_model_manager(self) -> Type:
         try:
@@ -85,8 +105,11 @@ class DjangoTestingModel(DataCreator):
             kwargs.update(model_data)
             return model_manager.create(**kwargs)
         else:
-            model, created = model_manager.get_or_create(**kwargs, defaults=model_data)
-            return model
+            if model_manager.filter(**kwargs).exists():
+                return model_manager.filter(**kwargs).first()
+            else:
+                model, created = model_manager.get_or_create(**kwargs, defaults=model_data)
+                return model
 
     def inspect_model(self, **kwargs) -> Dict:
         fields_info = dict()
