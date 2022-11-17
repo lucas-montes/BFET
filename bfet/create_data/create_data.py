@@ -11,7 +11,9 @@ from .constants import LIST_EMAIL_DOMAINS, LOREM_TEXT
 class DataCreator:
     @staticmethod
     def create_random_string(
-        max_value: int = 800, use_punctuation: bool = False, use_digits: bool = True
+        max_value: int = 800,
+        use_punctuation: bool = False,
+        use_digits: bool = True,
     ) -> str:
         min_value = 10
         characters = string.ascii_letters
@@ -50,11 +52,16 @@ class DataCreator:
         return random_dict
 
     @staticmethod
-    def create_random_slug(max_value: int = 800, use_digits: bool = True) -> str:
+    def create_random_slug(
+        max_value: int = 800,
+        use_digits: bool = True,
+    ) -> str:
         return "-".join(
             [
                 DataCreator.create_random_string(
-                    max_value=max_value, use_punctuation=False, use_digits=use_digits
+                    max_value=max_value,
+                    use_punctuation=False,
+                    use_digits=use_digits,
                 )
                 for _ in range(4)
             ]
@@ -75,11 +82,24 @@ class DataCreator:
 
     @staticmethod
     def create_random_uuid(kind: int = 4, **kwargs) -> uuid.UUID:
+        # TODO fix and do a better implementation
         uuids = {1: uuid.uuid1, 3: uuid.uuid3, 4: uuid.uuid4, 5: uuid.uuid5}
-        return uuids[kind](**kwargs)  # type: ignore
+        if kind == 4:
+            return uuids[kind]()
+        if ("namespace" or "name") in kwargs:
+            return uuids[kind](**kwargs)  # type: ignore
+        try:
+            final_uuid = uuids[kind](**kwargs)
+        except Exception:
+            final_uuid = uuids[kind]()
+        return final_uuid
 
     @staticmethod
-    def create_random_date(day: int = None, month: int = None, year: int = None) -> datetime.date:
+    def create_random_date(
+        day: int = None,  # type: ignore
+        month: int = None,  # type: ignore
+        year: int = None,  # type: ignore
+    ) -> datetime.date:
         month = month if month else random.randint(1, 12)
         if month == 2:
             max_day = 28
@@ -93,28 +113,43 @@ class DataCreator:
 
     @staticmethod
     def create_random_hour(
-        hour: int = None, minute: int = None, second: int = None
+        hour: int = 0,
+        minute: int = 0,
+        second: int = 0,
+        microsecond: int = 0,
+        tzinfo: datetime.timezone = datetime.timezone.utc,
     ) -> datetime.time:
         hour = hour if hour else random.randint(0, 23)
         minute = minute if minute else random.randint(0, 59)
         second = second if second else random.randint(0, 59)
-        return datetime.time(hour, minute, second)
+        return datetime.time(hour, minute, second, microsecond, tzinfo)
 
     @staticmethod
     def create_random_datetime(
-        day: int = None,
-        month: int = None,
-        year: int = None,
-        hour: int = None,
-        minute: int = None,
-        second: int = None,
+        day: int = None,  # type: ignore
+        month: int = None,  # type: ignore
+        year: int = None,  # type: ignore
+        hour: int = 0,
+        minute: int = 0,
+        second: int = 0,
+        microsecond: int = 0,
+        tzinfo: datetime.timezone = datetime.timezone.utc,
     ) -> datetime.datetime:
         date = DataCreator.create_random_date(day, month, year)
-        time = DataCreator.create_random_hour(hour, minute, second)
+        time = DataCreator.create_random_hour(
+            hour,
+            minute,
+            second,
+            microsecond,
+            tzinfo,
+        )
         return datetime.datetime.combine(date, time)
 
     @staticmethod
-    def create_random_integer(min_value: int = 0, max_value: int = 10000000) -> int:
+    def create_random_integer(
+        min_value: int = 0,
+        max_value: int = 10000000,
+    ) -> int:
         if max_value < min_value:
             min_value += max_value - min_value
         fnct = random.choice(
@@ -126,11 +161,17 @@ class DataCreator:
         return fnct(min_value, max_value)
 
     @staticmethod
-    def create_random_negative_integer(min_value: int = 0, max_value: int = 10000000) -> int:
+    def create_random_negative_integer(
+        min_value: int = 0,
+        max_value: int = 10000000,
+    ) -> int:
         return random.randint(min_value, max_value) * -1
 
     @staticmethod
-    def create_random_positive_integer(min_value: int = 0, max_value: int = 10000000) -> int:
+    def create_random_positive_integer(
+        min_value: int = 0,
+        max_value: int = 10000000,
+    ) -> int:
         return random.randint(min_value, max_value)
 
     @staticmethod
@@ -149,12 +190,16 @@ class DataCreator:
 
     @staticmethod
     def create_random_positive_float(
-        min_value: float = 0, max_value: float = 10000000, after_coma: int = 2
+        min_value: float = 0,
+        max_value: float = 10000000,
+        after_coma: int = 2,
     ) -> float:
         return round(random.uniform(min_value, max_value), after_coma)
 
     @staticmethod
     def create_random_negative_float(
-        min_value: float = 0, max_value: float = 10000000, after_coma: int = 2
+        min_value: float = 0,
+        max_value: float = 10000000,
+        after_coma: int = 2,
     ) -> float:
         return round(random.uniform(min_value, max_value), after_coma) * -1

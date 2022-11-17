@@ -12,6 +12,9 @@ from jinja2 import Environment, FileSystemLoader
 from .settings import ConfigFiles
 
 
+# inspect.getsource
+
+
 class CreateTests(ConfigFiles):
     """
     In this class is where the test files, class and functions are created
