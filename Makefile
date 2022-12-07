@@ -87,7 +87,6 @@ test-release: dist ## package and upload a release
 	twine upload -r testpypi dist/* --verbose
 
 release:
-	dist
 	make lint
 	make check
 	make test-release
@@ -96,11 +95,13 @@ release:
 
 # v0.1.0 -> v0.2.0
 bump-minor:
+	dist
 	bump2version minor
 	release
 
 # v0.1.0 -> v0.1.1
 bump-patch:
+	dist
 	bump2version patch
 	make release
 
