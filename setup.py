@@ -54,6 +54,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/lluc2397/bfet",
-    version=version,
+    version="0.1.4",
     zip_safe=False,
 )
