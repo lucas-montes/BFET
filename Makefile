@@ -95,13 +95,13 @@ release:
 
 # v0.1.0 -> v0.2.0
 bump-minor:
-	dist
+	make dist
 	bump2version minor
-	release
+	make release
 
 # v0.1.0 -> v0.1.1
 bump-patch:
-	dist
+	make dist
 	bump2version patch
 	make release
 
