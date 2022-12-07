@@ -135,15 +135,15 @@ class DataCreator:
         microsecond: int = 0,
         tzinfo: datetime.timezone = datetime.timezone.utc,
     ) -> datetime.datetime:
-        date = DataCreator.create_random_date(day, month, year)
+        date = DataCreator.create_random_date(day=day, month=month, year=year)
         time = DataCreator.create_random_hour(
-            hour,
-            minute,
-            second,
-            microsecond,
-            tzinfo,
+            hour=hour,
+            minute=minute,
+            second=second,
+            microsecond=microsecond,
+            tzinfo=tzinfo,
         )
-        return datetime.datetime.combine(date, time)
+        return datetime.datetime.combine(date=date, time=time, tzinfo=tzinfo)
 
     @staticmethod
     def create_random_integer(

@@ -1,6 +1,6 @@
 APPS_FOLDERS=bfet tests
 
-.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint check lint/flake8 lint/black lint/check-black lint/isort lint/check-isort lint/mypy
+.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint check
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -49,24 +49,6 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint/isort:
-	isort ${APPS_FOLDERS}
-
-lint/check-isort:
-	isort --df -c ${APPS_FOLDERS}
-
-lint/mypy: ## check types with mypy
-	mypy ${APPS_FOLDERS}
-
-lint/flake8: ## check style with flake8
-	flake8 ${APPS_FOLDERS} -show-source --statistics
-
-lint/black: ## run style fixing with black
-	black ${APPS_FOLDERS}
-
-lint/check-black: ## check style with black
-	black --check ${APPS_FOLDERS}
-
 lint: ## fix style
 	isort ${APPS_FOLDERS}
 	black ${APPS_FOLDERS}
@@ -79,7 +61,7 @@ check: ## check style
 	mypy ${APPS_FOLDERS}
 
 test: ## run tests quickly with the default Python
-	pytest
+	pytest -vv -x
 
 test-all: ## run tests on every Python version with tox
 	tox
@@ -104,7 +86,12 @@ servedocs: docs ## compile the docs watching for changes
 test-release: dist ## package and upload a release
 	twine upload -r testpypi dist/* --verbose
 
-release: dist ## package and upload a release
+release:
+	dist
+	lint
+	check
+	test-release
+	test
 	twine upload dist/* --verbose
 
 dist: clean ## builds source and wheel package
@@ -114,3 +101,11 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
+
+# v0.1.0 -> v0.2.0
+bump-minor:
+	bump2version minor
+
+# v0.1.0 -> v0.1.1
+bump-patch:
+	bump2version patch
