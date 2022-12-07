@@ -85,13 +85,13 @@ class DataCreator:
         # TODO fix and do a better implementation
         uuids = {1: uuid.uuid1, 3: uuid.uuid3, 4: uuid.uuid4, 5: uuid.uuid5}
         if kind == 4:
-            return uuids[kind]()
+            return uuids[kind]()  # type: ignore
         if ("namespace" or "name") in kwargs:
             return uuids[kind](**kwargs)  # type: ignore
         try:
-            final_uuid = uuids[kind](**kwargs)
+            final_uuid = uuids[kind](**kwargs)  # type: ignore
         except Exception:
-            final_uuid = uuids[kind]()
+            final_uuid = uuids[kind]()  # type: ignore
         return final_uuid
 
     @staticmethod
