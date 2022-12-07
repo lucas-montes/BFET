@@ -88,10 +88,10 @@ test-release: dist ## package and upload a release
 
 release:
 	dist
-	lint
-	check
-	test-release
-	test
+	make lint
+	make check
+	make test-release
+	make test
 	twine upload dist/* --verbose
 
 # v0.1.0 -> v0.2.0
@@ -102,7 +102,7 @@ bump-minor:
 # v0.1.0 -> v0.1.1
 bump-patch:
 	bump2version patch
-	release
+	make release
 
 dist: clean ## builds source and wheel package
 	python setup.py sdist
