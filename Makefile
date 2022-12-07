@@ -94,6 +94,16 @@ release:
 	test
 	twine upload dist/* --verbose
 
+# v0.1.0 -> v0.2.0
+bump-minor:
+	bump2version minor
+	release
+
+# v0.1.0 -> v0.1.1
+bump-patch:
+	bump2version patch
+	release
+
 dist: clean ## builds source and wheel package
 	python setup.py sdist
 	python setup.py bdist_wheel
@@ -101,11 +111,3 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
-
-# v0.1.0 -> v0.2.0
-bump-minor:
-	bump2version minor
-
-# v0.1.0 -> v0.1.1
-bump-patch:
-	bump2version patch
