@@ -5,7 +5,7 @@ __author__ = """Lucas Montes"""
 
 __email__ = "lluc23@hotmail.com"
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 __all__ = [
     "DjangoTestingModel",
