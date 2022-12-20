@@ -86,11 +86,13 @@ servedocs: docs ## compile the docs watching for changes
 test-release: dist ## package and upload a release
 	twine upload -r testpypi dist/* --verbose
 
-release:
+pre-release:
 	make lint
 	make check
 	make test-release
 	make test
+
+release:
 	twine upload dist/* --verbose
 
 # v0.1.0 -> v0.2.0
