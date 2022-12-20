@@ -140,7 +140,7 @@ class DjangoTestingModel(DataCreator):
             max_length = max_length / 100
         elif max_length > 10:
             max_length = max_length / 10
-        return max_length
+        return int(max_length)
 
     def inspect_field(self, field: Type, field_name: str) -> Dict:
         field_type = field.get_internal_type()
