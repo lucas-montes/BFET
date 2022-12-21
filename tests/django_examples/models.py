@@ -1,4 +1,3 @@
-# from django.conf import settings
 from django.db import models
 
 
@@ -10,6 +9,7 @@ class FKTestingModel(models.Model):
     non_filled = models.CharField(
         max_length=32,
     )
+    integer_test = models.IntegerField()
 
 
 # class M2MTestingModel(models.Model):

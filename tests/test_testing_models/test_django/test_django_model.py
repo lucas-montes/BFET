@@ -24,3 +24,7 @@ class TestDjangoTestingModel:
         assert new_obj.name == "prueba"
         duplicated_obj = DjangoTestingModel.create(FKTestingModel, name="prueba")
         assert new_obj == duplicated_obj
+
+    def test_max_lenght(self):
+        new_obj = DjangoTestingModel.create(FKTestingModel)
+        assert new_obj.integer_test < 5

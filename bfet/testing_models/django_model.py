@@ -134,6 +134,8 @@ class DjangoTestingModel(DataCreator):
     @staticmethod
     def set_max_value(max_length) -> int:
         # TODO test
+        if not max_length:
+            return 5
         if max_length > 1000:
             max_length = max_length / 1000
         elif max_length > 100:
@@ -145,7 +147,7 @@ class DjangoTestingModel(DataCreator):
     def inspect_field(self, field: Type, field_name: str) -> Dict:
         field_type = field.get_internal_type()
         field_specs = field.__dict__
-        max_length = field_specs.get("max_length", 10)
+        max_length = field_specs.get("max_length")
         extra_params = {}
         extra_params["max_value"] = self.set_max_value(max_length)
         return {field_name: self.generate_random_data_per_field(field_type, extra_params)}
