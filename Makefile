@@ -99,13 +99,11 @@ release:
 bump-minor:
 	make dist
 	bump2version minor
-	make release
 
 # v0.1.0 -> v0.1.1
 bump-patch:
 	make dist
 	bump2version patch
-	make release
 
 dist: clean ## builds source and wheel package
 	python setup.py sdist
