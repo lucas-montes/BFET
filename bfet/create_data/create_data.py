@@ -11,7 +11,7 @@ from .constants import LIST_EMAIL_DOMAINS, LOREM_TEXT
 class DataCreator:
     @staticmethod
     def create_random_string(
-        max_value: int = 800,
+        max_value: int = 10,
         use_punctuation: bool = False,
         use_digits: bool = True,
     ) -> str:
@@ -27,7 +27,7 @@ class DataCreator:
         return "".join(random.choice(characters) for _ in range(number))
 
     @staticmethod
-    def create_random_text(max_value: int = 1000) -> str:
+    def create_random_text(max_value: int = 50) -> str:
         return textwrap.wrap(LOREM_TEXT, max_value)[0]
 
     @staticmethod
@@ -53,7 +53,7 @@ class DataCreator:
 
     @staticmethod
     def create_random_slug(
-        max_value: int = 800,
+        max_value: int = 50,
         use_digits: bool = True,
     ) -> str:
         return "-".join(
@@ -74,7 +74,7 @@ class DataCreator:
         return f"{email_name}@{email_domain}"
 
     @staticmethod
-    def create_random_url(max_value: int = 100, secure=True) -> str:
+    def create_random_url(max_value: int = 20, secure=True) -> str:
         domain = DataCreator.create_random_string(max_value)
         top_level_domain = random.choice(LIST_EMAIL_DOMAINS).split(".")[-1]
         protocol = "https" if secure else "http"
@@ -129,10 +129,10 @@ class DataCreator:
         day: int = None,  # type: ignore
         month: int = None,  # type: ignore
         year: int = None,  # type: ignore
-        hour: int = 0,
-        minute: int = 0,
-        second: int = 0,
-        microsecond: int = 0,
+        hour: int = None,  # type: ignore
+        minute: int = None,  # type: ignore
+        second: int = None,  # type: ignore
+        microsecond: int = None,  # type: ignore
         tzinfo: datetime.timezone = datetime.timezone.utc,
     ) -> datetime.datetime:
         date = DataCreator.create_random_date(day=day, month=month, year=year)

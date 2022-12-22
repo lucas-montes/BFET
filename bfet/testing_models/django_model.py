@@ -149,7 +149,8 @@ class DjangoTestingModel(DataCreator):
         field_specs = field.__dict__
         max_length = field_specs.get("max_length")
         extra_params = {}
-        extra_params["max_value"] = self.set_max_value(max_length)
+        if max_length:
+            extra_params["max_value"] = self.set_max_value(max_length)
         return {field_name: self.generate_random_data_per_field(field_type, extra_params)}
 
     def generate_random_data_per_field(self, field_type: str, extra_params):
