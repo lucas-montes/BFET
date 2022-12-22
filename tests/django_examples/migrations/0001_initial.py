@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                 ("name", models.CharField(max_length=32, unique=True)),
                 ("non_filled", models.CharField(max_length=32)),
                 ("integer_test", models.IntegerField()),
+                ("datetime_test", models.DateTimeField()),
             ],
             options={
                 "verbose_name": "FKTestingModel",

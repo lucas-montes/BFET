@@ -126,13 +126,13 @@ class DataCreator:
 
     @staticmethod
     def create_random_datetime(
-        day: int = None,  # type: ignore
-        month: int = None,  # type: ignore
-        year: int = None,  # type: ignore
-        hour: int = None,  # type: ignore
-        minute: int = None,  # type: ignore
-        second: int = None,  # type: ignore
-        microsecond: int = None,  # type: ignore
+        day: int = 0,
+        month: int = 0,
+        year: int = 0,
+        hour: int = 0,
+        minute: int = 0,
+        second: int = 0,
+        microsecond: int = 0,
         tzinfo: datetime.timezone = datetime.timezone.utc,
     ) -> datetime.datetime:
         date = DataCreator.create_random_date(day=day, month=month, year=year)

@@ -10,6 +10,7 @@ class FKTestingModel(models.Model):
         max_length=32,
     )
     integer_test = models.IntegerField()
+    datetime_test = models.DateTimeField()
 
 
 # class M2MTestingModel(models.Model):
