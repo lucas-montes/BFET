@@ -1,11 +1,16 @@
-from typing import Dict, List, Type, Union
+from typing import Dict, List, Optional, Type, Union
 
 from ..create_data import DataCreator
 
 
 class DjangoTestingModel(DataCreator):
     def __init__(
-        self, model, quantity: int, in_bulk: bool, fill_all_fields: bool, force_create: bool
+        self,
+        model,
+        quantity: int,
+        in_bulk: bool,
+        fill_all_fields: bool,
+        force_create: bool,
     ) -> None:
         self.model = model
         self.quantity = quantity
@@ -55,27 +60,7 @@ class DjangoTestingModel(DataCreator):
             Union[Type, List[Type]]
                 An instance or a list of instances created
         """
-        if quantity > 1:
-            if in_bulk:
-                return cls(
-                    model,
-                    quantity,
-                    in_bulk,
-                    fill_all_fields,
-                    force_create,
-                ).create_in_bulk(**kwargs)
-            else:
-                return [
-                    cls(
-                        model,
-                        quantity,
-                        in_bulk,
-                        fill_all_fields,
-                        force_create,
-                    ).create_model(**kwargs)
-                    for number in range(quantity)
-                ]
-        else:
+        if quantity == 1:
             return cls(
                 model,
                 quantity,
@@ -83,18 +68,39 @@ class DjangoTestingModel(DataCreator):
                 fill_all_fields,
                 force_create,
             ).create_model(**kwargs)
+        if in_bulk:
+            return cls(
+                model,
+                quantity,
+                in_bulk,
+                fill_all_fields,
+                force_create,
+            ).create_in_bulk(**kwargs)
+        else:
+            return [
+                cls(
+                    model,
+                    quantity,
+                    in_bulk,
+                    fill_all_fields,
+                    force_create,
+                ).create_model(**kwargs)
+                for _ in range(quantity)
+            ]
 
     def get_model_manager(self) -> Type:
         try:
             manager = self.model._default_manager
         except AttributeError:
             manager = self.model.objects
-        finally:
-            return manager
+        return manager
 
     def create_in_bulk(self, **kwargs):
         pre_objects = [
-            self.model(**self.inspect_model(**kwargs)) for number in range(self.quantity)
+            self.model(
+                **self.inspect_model(**kwargs),
+            )
+            for _ in range(self.quantity)
         ]
         return self.get_model_manager().bulk_create(pre_objects)
 
@@ -102,18 +108,19 @@ class DjangoTestingModel(DataCreator):
         model_data = self.inspect_model(**kwargs)
         model_manager = self.get_model_manager()
         if self.force_create:
-            kwargs.update(model_data)
-            return model_manager.create(**kwargs)
+            kwargs |= model_data
+            model = model_manager.create(**kwargs)
+        elif model_manager.filter(**kwargs).exists():
+            model = model_manager.filter(**kwargs).first()
         else:
-            if model_manager.filter(**kwargs).exists():
-                return model_manager.filter(**kwargs).first()
-            else:
-                model, created = model_manager.get_or_create(**kwargs, defaults=model_data)
-                return model
+            model, created = model_manager.get_or_create(
+                **kwargs,
+                defaults=model_data,
+            )
+        return model
 
     def inspect_model(self, **kwargs) -> Dict:
-        fields_info = dict()
-        # all_model_fields = model._meta.get_fields()
+        fields_info = {}
         for field in self.model._meta.fields:
             field_name = field.name
             if field_name == "id":
@@ -121,18 +128,16 @@ class DjangoTestingModel(DataCreator):
             if field_name in kwargs:
                 fields_info[field_name] = kwargs.pop(field_name)
             else:
-                if self.fill_all_fields is False:
-                    field_allow_null = field.__dict__.get("null")
-                    if field_allow_null and field_allow_null is True:
-                        fields_info.update({field_name: None})
-                        continue
+                if self.fill_all_fields is False and field.__dict__.get("null"):
+                    fields_info[field_name] = None
+                    continue
 
-                fields_info.update(self.inspect_field(field, field_name))
+                fields_info |= self.inspect_field(field, field_name)
 
         return fields_info
 
     @staticmethod
-    def set_max_value(max_length) -> int:
+    def set_max_value(max_length: Optional[int | float]) -> int:
         # TODO test
         if not max_length:
             return 5
@@ -151,7 +156,12 @@ class DjangoTestingModel(DataCreator):
         extra_params = {}
         if max_length:
             extra_params["max_value"] = self.set_max_value(max_length)
-        return {field_name: self.generate_random_data_per_field(field_type, extra_params)}
+        return {
+            field_name: self.generate_random_data_per_field(
+                field_type,
+                extra_params,
+            )
+        }
 
     def generate_random_data_per_field(self, field_type: str, extra_params):
         # BigIntegerField (min_value=10000)

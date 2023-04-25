@@ -2,7 +2,7 @@ import datetime
 import random
 import string
 import textwrap
-from typing import Dict
+from typing import Dict, Optional
 import uuid
 
 from .constants import LIST_EMAIL_DOMAINS, LOREM_TEXT
@@ -11,7 +11,7 @@ from .constants import LIST_EMAIL_DOMAINS, LOREM_TEXT
 class DataCreator:
     @staticmethod
     def create_random_string(
-        max_value: int = 10,
+        max_value: int = 100,
         use_punctuation: bool = False,
         use_digits: bool = True,
     ) -> str:
@@ -32,24 +32,19 @@ class DataCreator:
 
     @staticmethod
     def create_random_bool() -> bool:
-        return bool(random.randint(0, 1) == 1)
+        return random.randint(0, 1) == 1
 
     @staticmethod
     def create_random_json() -> Dict:
-        random_dict = {}
         choices = {
             1: DataCreator.create_random_string(),
             2: DataCreator.create_random_bool(),
-            3: DataCreator.create_random_datetime().strftime("%m/%d/%Y, %H:%M:%S"),
+            3: DataCreator.create_random_datetime().strftime(
+                "%m/%d/%Y, %H:%M:%S",
+            ),
             4: DataCreator.create_random_float(),
         }
-        for index in range(3):
-            variable_key = random.randint(1, 4)
-            variable_value = random.randint(1, 4)
-            key = choices[variable_key]
-            value = choices[variable_value]
-            random_dict[f"{key}"] = value
-        return random_dict
+        return {choices[random.randint(1, 4)]: choices[random.randint(1, 4)] for _ in range(3)}
 
     @staticmethod
     def create_random_slug(
@@ -83,7 +78,12 @@ class DataCreator:
     @staticmethod
     def create_random_uuid(kind: int = 4, **kwargs) -> uuid.UUID:
         # TODO fix and do a better implementation
-        uuids = {1: uuid.uuid1, 3: uuid.uuid3, 4: uuid.uuid4, 5: uuid.uuid5}
+        uuids = {
+            1: uuid.uuid1,
+            3: uuid.uuid3,
+            4: uuid.uuid4,
+            5: uuid.uuid5,
+        }
         if kind == 4:
             return uuids[kind]()  # type: ignore
         if ("namespace" or "name") in kwargs:
@@ -96,46 +96,61 @@ class DataCreator:
 
     @staticmethod
     def create_random_date(
-        day: int = None,  # type: ignore
-        month: int = None,  # type: ignore
-        year: int = None,  # type: ignore
+        day: Optional[int] = None,  # type: ignore
+        month: Optional[int] = None,  # type: ignore
+        year: Optional[int] = None,  # type: ignore
     ) -> datetime.date:
-        month = month if month else random.randint(1, 12)
+        month = month or random.randint(1, 12)
         if month == 2:
             max_day = 28
-        elif month in [1, 3, 5, 7, 8, 10, 12]:
+        elif month in {1, 3, 5, 7, 8, 10, 12}:
             max_day = 31
         else:
             max_day = 30
-        day = day if day else random.randint(1, max_day)
-        year = year if year else random.randint(1900, 2100)
-        return datetime.date(year=year, month=month, day=day)
+        day = day or random.randint(1, max_day)
+        year = year or random.randint(1900, 2100)
+        return datetime.date(
+            year=year,
+            month=month,
+            day=day,
+        )
 
     @staticmethod
     def create_random_hour(
-        hour: int = 0,
-        minute: int = 0,
-        second: int = 0,
-        microsecond: int = 0,
+        hour: Optional[int] = None,
+        minute: Optional[int] = None,
+        second: Optional[int] = None,
+        microsecond: Optional[int] = None,
         tzinfo: datetime.timezone = datetime.timezone.utc,
     ) -> datetime.time:
-        hour = hour if hour else random.randint(0, 23)
-        minute = minute if minute else random.randint(0, 59)
-        second = second if second else random.randint(0, 59)
-        return datetime.time(hour, minute, second, microsecond, tzinfo)
+        hour = hour or random.randint(0, 23)
+        minute = minute or random.randint(0, 59)
+        second = second or random.randint(0, 59)
+        microsecond = microsecond or random.randint(0, 59)
+        return datetime.time(
+            hour,
+            minute,
+            second,
+            microsecond,
+            tzinfo,
+        )
 
     @staticmethod
     def create_random_datetime(
-        day: int = 0,
-        month: int = 0,
-        year: int = 0,
-        hour: int = 0,
-        minute: int = 0,
-        second: int = 0,
-        microsecond: int = 0,
+        day: Optional[int] = None,
+        month: Optional[int] = None,
+        year: Optional[int] = None,
+        hour: Optional[int] = None,
+        minute: Optional[int] = None,
+        second: Optional[int] = None,
+        microsecond: Optional[int] = None,
         tzinfo: datetime.timezone = datetime.timezone.utc,
     ) -> datetime.datetime:
-        date = DataCreator.create_random_date(day=day, month=month, year=year)
+        date = DataCreator.create_random_date(
+            day=day,
+            month=month,
+            year=year,
+        )
         time = DataCreator.create_random_hour(
             hour=hour,
             minute=minute,
@@ -143,7 +158,11 @@ class DataCreator:
             microsecond=microsecond,
             tzinfo=tzinfo,
         )
-        return datetime.datetime.combine(date=date, time=time, tzinfo=tzinfo)
+        return datetime.datetime.combine(
+            date=date,
+            time=time,
+            tzinfo=tzinfo,
+        )
 
     @staticmethod
     def create_random_integer(
