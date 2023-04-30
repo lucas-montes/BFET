@@ -11,24 +11,25 @@ class TestDjangoTestingModel:
         new_obj = DjangoTestingModel.create(FKTestingModel)
         assert isinstance(new_obj, FKTestingModel)
 
-    def test_model_create(self):
+    def create_check_model(self) -> FKTestingModel:
         assert FKTestingModel.objects.all().count() == 0
-        new_obj = DjangoTestingModel.create(FKTestingModel, name="prueba")
+        new_obj: FKTestingModel = DjangoTestingModel.create(FKTestingModel, name="prueba")
         assert FKTestingModel.objects.all().count() == 1
         assert new_obj.name == "prueba"
+        return new_obj
+
+    def test_model_create(self):
+        self.create_check_model()
 
     def test_model_get_or_create(self):
-        assert FKTestingModel.objects.all().count() == 0
-        new_obj = DjangoTestingModel.create(FKTestingModel, name="prueba")
-        assert FKTestingModel.objects.all().count() == 1
-        assert new_obj.name == "prueba"
+        new_obj = self.create_check_model()
         duplicated_obj = DjangoTestingModel.create(FKTestingModel, name="prueba")
         assert new_obj == duplicated_obj
 
     def test_max_lenght(self):
-        new_obj = DjangoTestingModel.create(FKTestingModel)
+        new_obj: FKTestingModel = DjangoTestingModel.create(FKTestingModel)
         assert new_obj.integer_test < 5
 
     def test_datetime(self):
-        new_obj = DjangoTestingModel.create(FKTestingModel)
-        assert new_obj.datetime_test.day() < 5
+        new_obj: FKTestingModel = DjangoTestingModel.create(FKTestingModel)
+        assert new_obj.datetime_test.day < 5
