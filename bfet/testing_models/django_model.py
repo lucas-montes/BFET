@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Type, TypeVar
+from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from ..create_data import DataCreator
 
@@ -24,11 +24,9 @@ class DjangoTestingModel(DataCreator):
     def create(
         cls,
         model: Type[T],
-        quantity: int = 1,
-        in_bulk: bool = False,
         fill_all_fields: bool = True,
         force_create: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ) -> T:
         """The method to call when we want to create one or more instances
         TODO
@@ -63,11 +61,11 @@ class DjangoTestingModel(DataCreator):
                 An instance or a list of instances created
         """
         return cls(
-            model,
-            quantity,
-            in_bulk,
-            fill_all_fields,
-            force_create,
+            model=model,
+            quantity=1,
+            in_bulk=False,
+            fill_all_fields=fill_all_fields,
+            force_create=force_create,
         ).create_model(**kwargs)
 
     @classmethod
