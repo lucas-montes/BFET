@@ -64,7 +64,7 @@ def pytest_configure():
         LANGUAGE_CODE="en",
         SITE_ID=1,
         MIDDLEWARE=(),
-        USE_TZ=os.environ.get("USE_TZ", False),
+        USE_TZ=os.environ.get("USE_TZ", True),
         USING_POSTGRES=using_postgres_flag,
         # Set the version explicitly otherwise Django does extra queries
         # to get the version via SQL when using POSTGIS

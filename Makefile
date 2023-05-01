@@ -87,10 +87,11 @@ test-release: dist ## package and upload a release
 	twine upload -r testpypi dist/* --verbose
 
 pre-release:
+	make test
 	make lint
 	make check
 	make test-release
-	make test
+	
 
 release:
 	twine upload dist/* --verbose

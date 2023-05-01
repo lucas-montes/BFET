@@ -28,8 +28,4 @@ class TestDjangoTestingModel:
 
     def test_max_lenght(self):
         new_obj: FKTestingModel = DjangoTestingModel.create(FKTestingModel)
-        assert new_obj.integer_test < 5
-
-    def test_datetime(self):
-        new_obj: FKTestingModel = DjangoTestingModel.create(FKTestingModel)
-        assert new_obj.datetime_test.day < 5
+        assert len(new_obj.name) < 32

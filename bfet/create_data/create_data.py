@@ -15,7 +15,7 @@ class DataCreator:
         use_punctuation: bool = False,
         use_digits: bool = True,
     ) -> str:
-        min_value = 10
+        min_value = 50
         characters = string.ascii_letters
         if use_digits:
             characters += string.digits

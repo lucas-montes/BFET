@@ -1,8 +1,8 @@
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Dict, List, Optional, Type, TypeVar
 
 from ..create_data import DataCreator
 
-D = TypeVar("D")
+T = TypeVar("T")
 
 
 class DjangoTestingModel(DataCreator):
@@ -23,13 +23,13 @@ class DjangoTestingModel(DataCreator):
     @classmethod
     def create(
         cls,
-        model: D,
+        model: T,
         quantity: int = 1,
         in_bulk: bool = False,
         fill_all_fields: bool = True,
         force_create: bool = False,
-        **kwargs: Dict[Any, Any],
-    ) -> D | List[D]:
+        **kwargs,
+    ) -> T | List[T]:
         """The method to call when we want to create one or more instances
         TODO
         Create and raise an error if in_bulk or quantity > 1 and force_create is set to True
@@ -54,7 +54,7 @@ class DjangoTestingModel(DataCreator):
                 Boolean to indicate, if any field is manually filled, it has to perform
                 a get_or_create instead of create, by default False
 
-            kwargs : Dict[Any, Any]
+            kwargs
                 Fields of the model that we want to manually fill
 
         Returns
@@ -97,7 +97,7 @@ class DjangoTestingModel(DataCreator):
             manager = self.model.objects
         return manager
 
-    def create_in_bulk(self, **kwargs: Dict[Any, Any]) -> List[D]:
+    def create_in_bulk(self, **kwargs):
         pre_objects = [
             self.model(
                 **self.inspect_model(**kwargs),
@@ -106,14 +106,14 @@ class DjangoTestingModel(DataCreator):
         ]
         return self.get_model_manager().bulk_create(pre_objects)
 
-    def create_model(self, **kwargs: Dict[Any, Any]) -> D:
+    def create_model(self, **kwargs):
         model_data = self.inspect_model(**kwargs)
         model_manager = self.get_model_manager()
         if self.force_create:
             kwargs |= model_data
-            model: D = model_manager.create(**kwargs)
+            model = model_manager.create(**kwargs)
         elif model_manager.filter(**kwargs).exists():
-            model: D = model_manager.filter(**kwargs).first()
+            model = model_manager.filter(**kwargs).first()
         else:
             model, _ = model_manager.get_or_create(
                 **kwargs,
@@ -121,7 +121,7 @@ class DjangoTestingModel(DataCreator):
             )
         return model
 
-    def inspect_model(self, **kwargs: Dict[Any, Any]) -> Dict:
+    def inspect_model(self, **kwargs) -> Dict:
         fields_info = {}
         for field in self.model._meta.fields:
             field_name = field.name
@@ -168,7 +168,7 @@ class DjangoTestingModel(DataCreator):
     def generate_random_data_per_field(
         self,
         field_type: str,
-        extra_params: Dict[Any, Any],
+        extra_params,
     ):
         # BigIntegerField (min_value=10000)
         # PositiveBigIntegerField (min_value=10000)
@@ -213,5 +213,5 @@ class DjangoTestingModel(DataCreator):
         }
         return data_generator[field_type](**extra_params)  # type: ignore
 
-    def return_none_by_now(self, **extra_params: Dict[Any, Any]):
+    def return_none_by_now(self, **extra_params):
         return None
