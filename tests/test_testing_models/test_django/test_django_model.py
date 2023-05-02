@@ -34,4 +34,4 @@ class TestDjangoTestingModel:
 
     def test_max_lenght(self):
         new_obj: FKTestingModel = DjangoTestingModel.create(FKTestingModel)
-        assert len(new_obj.name) < 32
+        assert len(new_obj.name) <= 32

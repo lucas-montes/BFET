@@ -1,23 +1,20 @@
 from typing import Any, Dict, List, Optional, Type, TypeVar
 
 from ..create_data import (
+    create_random_bool,
+    create_random_date,
+    create_random_datetime,
+    create_random_email,
+    create_random_float,
+    create_random_hour,
+    create_random_integer,
+    create_random_json,
+    create_random_positive_integer,
+    create_random_slug,
     create_random_string,
     create_random_text,
-    create_random_bool,
-    create_random_json,
-    create_random_slug,
-    create_random_email,
     create_random_url,
     create_random_uuid,
-    create_random_date,
-    create_random_hour,
-    create_random_datetime,
-    create_random_integer,
-    create_random_negative_integer,
-    create_random_positive_integer,
-    create_random_float,
-    create_random_positive_float,
-    create_random_negative_float,
 )
 
 T = TypeVar("T")
@@ -196,7 +193,8 @@ class DjangoTestingModel:
         return fields_info
 
     @staticmethod
-    def set_max_value(max_length: int | float) -> int:
+    def set_max_value(max_length: Optional[int | float]) -> int:
+        max_length = max_length or 10
         if max_length > 1000:
             max_length = max_length / 100
         elif max_length > 100:
@@ -205,7 +203,9 @@ class DjangoTestingModel:
 
     def inspect_field(self, field: Type, field_name: str) -> Dict:
         field_info = field.__dict__
-        extra_params = {"max_value": self.set_max_value(field_info.get("max_length", 10))}
+        extra_params = {}
+        if max_lenght := field_info.get("max_length"):
+            extra_params = {"max_value": self.set_max_value(max_lenght)}
         return {
             field_name: self.generate_random_data_per_field(
                 field.get_internal_type(),
