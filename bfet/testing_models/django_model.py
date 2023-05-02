@@ -1,11 +1,29 @@
 from typing import Any, Dict, List, Optional, Type, TypeVar
 
-from ..create_data import DataCreator
+from ..create_data import (
+    create_random_string,
+    create_random_text,
+    create_random_bool,
+    create_random_json,
+    create_random_slug,
+    create_random_email,
+    create_random_url,
+    create_random_uuid,
+    create_random_date,
+    create_random_hour,
+    create_random_datetime,
+    create_random_integer,
+    create_random_negative_integer,
+    create_random_positive_integer,
+    create_random_float,
+    create_random_positive_float,
+    create_random_negative_float,
+)
 
 T = TypeVar("T")
 
 
-class DjangoTestingModel(DataCreator):
+class DjangoTestingModel:
     def __init__(
         self,
         model,
@@ -178,28 +196,19 @@ class DjangoTestingModel(DataCreator):
         return fields_info
 
     @staticmethod
-    def set_max_value(max_length: Optional[int | float]) -> int:
-        # TODO test
-        if not max_length:
-            return 5
+    def set_max_value(max_length: int | float) -> int:
         if max_length > 1000:
-            max_length = max_length / 1000
-        elif max_length > 100:
             max_length = max_length / 100
-        elif max_length > 10:
+        elif max_length > 100:
             max_length = max_length / 10
         return int(max_length)
 
     def inspect_field(self, field: Type, field_name: str) -> Dict:
-        field_type = field.get_internal_type()
-        field_specs = field.__dict__
-        max_length = field_specs.get("max_length")
-        extra_params = {}
-        if max_length:
-            extra_params["max_value"] = self.set_max_value(max_length)
+        field_info = field.__dict__
+        extra_params = {"max_value": self.set_max_value(field_info.get("max_length", 10))}
         return {
             field_name: self.generate_random_data_per_field(
-                field_type,
+                field.get_internal_type(),
                 extra_params,
             )
         }
@@ -212,40 +221,40 @@ class DjangoTestingModel(DataCreator):
         # BigIntegerField (min_value=10000)
         # PositiveBigIntegerField (min_value=10000)
         data_generator = {
-            "DateTimeField": DjangoTestingModel.create_random_datetime,
-            "DateField": DjangoTestingModel.create_random_date,
-            "TimeField": DjangoTestingModel.create_random_hour,
+            "DateTimeField": create_random_datetime,
+            "DateField": create_random_date,
+            "TimeField": create_random_hour,
             # "DurationField": DjangoTestingModel.create(),
             # "AutoField": DjangoTestingModel.create(),
             # "BigAutoField": DjangoTestingModel.create(),
             # "SmallAutoField": DjangoTestingModel.create(),
             # "BinaryField": DjangoTestingModel.create(),
             # "CommaSeparatedIntegerField": DjangoTestingModel.create(),
-            "DecimalField": DjangoTestingModel.create_random_float,
-            "FloatField": DjangoTestingModel.create_random_float,
-            "BigIntegerField": DjangoTestingModel.create_random_integer,
-            "PositiveBigIntegerField": DjangoTestingModel.create_random_positive_integer,
-            "PositiveIntegerField": DjangoTestingModel.create_random_positive_integer,
-            "PositiveSmallIntegerField": DjangoTestingModel.create_random_positive_integer,
-            "IntegerField": DjangoTestingModel.create_random_integer,
-            "SmallIntegerField": DjangoTestingModel.create_random_integer,
-            "CharField": DjangoTestingModel.create_random_string,
-            "TextField": DjangoTestingModel.create_random_text,
-            "SlugField": DjangoTestingModel.create_random_slug,
-            "URLField": DjangoTestingModel.create_random_url,
-            "UUIDField": DjangoTestingModel.create_random_uuid,
-            "EmailField": DjangoTestingModel.create_random_email,
+            "DecimalField": create_random_float,
+            "FloatField": create_random_float,
+            "BigIntegerField": create_random_integer,
+            "PositiveBigIntegerField": create_random_positive_integer,
+            "PositiveIntegerField": create_random_positive_integer,
+            "PositiveSmallIntegerField": create_random_positive_integer,
+            "IntegerField": create_random_integer,
+            "SmallIntegerField": create_random_integer,
+            "CharField": create_random_string,
+            "TextField": create_random_text,
+            "SlugField": create_random_slug,
+            "URLField": create_random_url,
+            "UUIDField": create_random_uuid,
+            "EmailField": create_random_email,
             # "Empty": DjangoTestingModel.create(),
             # "Field": DjangoTestingModel.create(),
             # "NOT_PROVIDED": DjangoTestingModel.create(),
             # "FilePathField": DjangoTestingModel.create(),
             "FileField": self.return_none_by_now,
             "ImageField": self.return_none_by_now,
-            "JSONField": DjangoTestingModel.create_random_json,
+            "JSONField": create_random_json,
             # "GenericIPAddressField": DjangoTestingModel.create(),
             # "IPAddressField": DjangoTestingModel.create(),
-            "BooleanField": DjangoTestingModel.create_random_bool,
-            "NullBooleanField": DjangoTestingModel.create_random_bool,
+            "BooleanField": create_random_bool,
+            "NullBooleanField": create_random_bool,
             "ForeignKey": self.return_none_by_now,
             "OneToOneField": self.return_none_by_now,
             "ManyToManyField": self.return_none_by_now,
