@@ -44,26 +44,17 @@ class DjangoTestingModel:
         **kwargs: Any,
     ) -> T:
         """The method to call when we want to create one or more instances
-        TODO
-        Create and raise an error if in_bulk or quantity > 1 and force_create is set to True
-        and instances can't be created without repeating a given field
 
         Parameters
         ----------
             model : Type
                 The model that we want to use to create the instances from
 
-            quantity : int, optional
-                The number of instances that we want to create, by default 1
-
-            in_bulk : bool, optional
-                Boolean to use the bulk_create built-in of Django, by default False
-
-            fill_all_fields : bool, optional
+            fill_all_fields : bool
                 Boolean to tell if all the fields must be filled or it's better to leave them blank
                 (if possible), by default True
 
-            force_create : bool, optional
+            force_create : bool
                 Boolean to indicate, if any field is manually filled, it has to perform
                 a get_or_create instead of create, by default False
 
@@ -72,8 +63,8 @@ class DjangoTestingModel:
 
         Returns
         -------
-            Union[Type, List[Type]]
-                An instance or a list of instances created
+            Type
+                An new model created
         """
         return cls(
             model=model,
@@ -81,7 +72,7 @@ class DjangoTestingModel:
             in_bulk=False,
             fill_all_fields=fill_all_fields,
             force_create=force_create,
-        ).create_model(**kwargs)
+        )._create_model(**kwargs)
 
     @classmethod
     def create_many(
@@ -103,17 +94,17 @@ class DjangoTestingModel:
             model : Type
                 The model that we want to use to create the instances from
 
-            quantity : int, optional
-                The number of instances that we want to create, by default 1
+            quantity : int
+                The number of instances that we want to create, by default 2
 
-            in_bulk : bool, optional
+            in_bulk : bool
                 Boolean to use the bulk_create built-in of Django, by default False
 
-            fill_all_fields : bool, optional
+            fill_all_fields : bool
                 Boolean to tell if all the fields must be filled or it's better to leave them blank
                 (if possible), by default True
 
-            force_create : bool, optional
+            force_create : bool
                 Boolean to indicate, if any field is manually filled, it has to perform
                 a get_or_create instead of create, by default False
 
@@ -122,8 +113,8 @@ class DjangoTestingModel:
 
         Returns
         -------
-            Union[Type, List[Type]]
-                An instance or a list of instances created
+            List[Type]
+                A l ist of models created
         """
         if in_bulk:
             return cls(
@@ -132,7 +123,7 @@ class DjangoTestingModel:
                 in_bulk,
                 fill_all_fields,
                 force_create,
-            ).create_in_bulk(**kwargs)
+            )._create_in_bulk(**kwargs)
         return [
             cls(
                 model,
@@ -140,29 +131,29 @@ class DjangoTestingModel:
                 in_bulk,
                 fill_all_fields,
                 force_create,
-            ).create_model(**kwargs)
+            )._create_model(**kwargs)
             for _ in range(quantity)
         ]
 
-    def get_model_manager(self) -> Type:
+    def _get_model_manager(self) -> Type:
         try:
             manager = self.model._default_manager
         except AttributeError:
             manager = self.model.objects
         return manager
 
-    def create_in_bulk(self, **kwargs):
+    def _create_in_bulk(self, **kwargs) -> Any:
         pre_objects = [
             self.model(
-                **self.inspect_model(**kwargs),
+                **self._inspect_model(**kwargs),
             )
             for _ in range(self.quantity)
         ]
-        return self.get_model_manager().bulk_create(pre_objects)
+        return self._get_model_manager().bulk_create(pre_objects)
 
-    def create_model(self, **kwargs):
-        model_data = self.inspect_model(**kwargs)
-        model_manager = self.get_model_manager()
+    def _create_model(self, **kwargs) -> Any:
+        model_data = self._inspect_model(**kwargs)
+        model_manager = self._get_model_manager()
         if self.force_create:
             kwargs |= model_data
             model = model_manager.create(**kwargs)
@@ -175,7 +166,7 @@ class DjangoTestingModel:
             )
         return model
 
-    def inspect_model(self, **kwargs) -> Dict:
+    def _inspect_model(self, **kwargs) -> Dict:
         fields_info = {}
         for field in self.model._meta.fields:
             field_name = field.name
@@ -184,16 +175,16 @@ class DjangoTestingModel:
             if field_name in kwargs:
                 fields_info[field_name] = kwargs.pop(field_name)
             else:
-                if self.fill_all_fields is False and field.__dict__.get("null"):
+                if not self.fill_all_fields and field.__dict__.get("null"):
                     fields_info[field_name] = None
                     continue
 
-                fields_info |= self.inspect_field(field, field_name)
+                fields_info |= self._inspect_field(field, field_name)
 
         return fields_info
 
     @staticmethod
-    def set_max_value(max_length: Optional[int | float]) -> int:
+    def _set_max_value(max_length: Optional[int | float]) -> int:
         max_length = max_length or 10
         if max_length > 1000:
             max_length = max_length / 100
@@ -201,22 +192,22 @@ class DjangoTestingModel:
             max_length = max_length / 10
         return int(max_length)
 
-    def inspect_field(self, field: Type, field_name: str) -> Dict:
+    def _inspect_field(self, field: Type, field_name: str) -> Dict[str, Any]:
         field_info = field.__dict__
         extra_params = {}
         if max_lenght := field_info.get("max_length"):
-            extra_params = {"max_value": self.set_max_value(max_lenght)}
+            extra_params = {"max_value": self._set_max_value(max_lenght)}
         return {
-            field_name: self.generate_random_data_per_field(
+            field_name: self._generate_random_data_per_field(
                 field.get_internal_type(),
                 extra_params,
             )
         }
 
-    def generate_random_data_per_field(
+    def _generate_random_data_per_field(
         self,
         field_type: str,
-        extra_params,
+        extra_params: Dict,
     ):
         # BigIntegerField (min_value=10000)
         # PositiveBigIntegerField (min_value=10000)
@@ -248,18 +239,18 @@ class DjangoTestingModel:
             # "Field": DjangoTestingModel.create(),
             # "NOT_PROVIDED": DjangoTestingModel.create(),
             # "FilePathField": DjangoTestingModel.create(),
-            "FileField": self.return_none_by_now,
-            "ImageField": self.return_none_by_now,
+            "FileField": self._return_none_by_now,
+            "ImageField": self._return_none_by_now,
             "JSONField": create_random_json,
             # "GenericIPAddressField": DjangoTestingModel.create(),
             # "IPAddressField": DjangoTestingModel.create(),
             "BooleanField": create_random_bool,
             "NullBooleanField": create_random_bool,
-            "ForeignKey": self.return_none_by_now,
-            "OneToOneField": self.return_none_by_now,
-            "ManyToManyField": self.return_none_by_now,
+            "ForeignKey": self._return_none_by_now,
+            "OneToOneField": self._return_none_by_now,
+            "ManyToManyField": self._return_none_by_now,
         }
         return data_generator[field_type](**extra_params)  # type: ignore
 
-    def return_none_by_now(self, **extra_params):
+    def _return_none_by_now(self, **extra_params):
         return None

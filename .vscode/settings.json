@@ -15,7 +15,7 @@
     "python.analysis.autoImportCompletions": true,
     "python.linting.enabled": true,
     "python.testing.autoTestDiscoverOnSaveEnabled": true,
-    "python.linting.pycodestyleEnabled": true,
+    "python.linting.pycodestyleEnabled": false,
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
@@ -38,5 +38,6 @@
         "editor.bracketPairColorization.enabled": true,
         "editor.autoIndent": "advanced",
         "editor.wordWrapColumn": 110,
-    }
+    },
+    "python.linting.mypyEnabled": true
 }

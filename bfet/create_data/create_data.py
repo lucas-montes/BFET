@@ -83,13 +83,13 @@ def create_random_uuid(kind: int = 4, **kwargs) -> uuid.UUID:
         5: uuid.uuid5,
     }
     if kind == 4:
-        return uuids[kind]()  # type: ignore
+        return uuids[kind]()
     if ("namespace" or "name") in kwargs:
-        return uuids[kind](**kwargs)  # type: ignore
+        return uuids[kind](**kwargs)
     try:
-        final_uuid = uuids[kind](**kwargs)  # type: ignore
+        final_uuid = uuids[kind](**kwargs)
     except Exception:
-        final_uuid = uuids[kind]()  # type: ignore
+        final_uuid = uuids[kind]()
     return final_uuid
 
 

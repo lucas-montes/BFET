@@ -35,7 +35,7 @@ setup(
         "Programming Language :: Python :: 3.10",
     ],
     description=(
-        "Better Faster Easier Testing. Create Django models quickly and easly, create different"
+        "Better Faster Easier Testing. Create data models quickly and easly, create different"
         " data types for testing cases or create default tests files"
     ),
     entry_points={

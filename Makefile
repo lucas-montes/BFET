@@ -50,13 +50,12 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## fix style
-	isort ${APPS_FOLDERS}
+	ruff ${APPS_FOLDERS}
 	black ${APPS_FOLDERS}
 
 check: ## check style
 	twine check dist/*
-	flake8 ${APPS_FOLDERS}
-	isort --df -c ${APPS_FOLDERS}
+	ruff ${APPS_FOLDERS} check
 	black --check ${APPS_FOLDERS} 
 	mypy ${APPS_FOLDERS}
 

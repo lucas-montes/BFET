@@ -2,8 +2,6 @@ pip
 bump2version==0.5.11
 wheel==0.33.6
 watchdog==0.9.0
-flake8
-flake8-isort
 tox==3.14.0
 coverage==4.5.4
 Sphinx
@@ -13,3 +11,6 @@ pytest
 black
 mypy
 django
+ruff
+pydantic
+-e .

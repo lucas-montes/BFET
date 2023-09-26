@@ -1,0 +1,52 @@
+#!/bin/bash
+
+source venv/bin/activate
+
+TEST_FOLDER=tests
+CODE_FOLDER=bfet
+
+
+find_in_conda_env(){
+    conda env list | grep "${@}" >/dev/null 2>/dev/null
+}
+
+# Check for a venv
+if [ -d "venv" ]; then
+    echo "Activating venv..."
+    source venv/bin/activate
+else
+    # Check for a Conda environment
+    if find_in_conda_env ".*RUN_ENV.*" ; then
+        echo "Activating Conda environment"
+        conda init __env__
+    else
+        echo "No suitable environment found."
+    fi
+fi
+
+# Create an array of commands and corresponding messages
+commands=(
+    "pytest $TEST_FOLDER -x --disable-pytest-warnings"
+    "mypy $CODE_FOLDER $TEST_FOLDER"
+    "black --check $CODE_FOLDER $TEST_FOLDER"
+    "ruff check $CODE_FOLDER $TEST_FOLDER"
+)
+
+messages=(
+    "Pytest"
+    "Mypy"
+    "Black"
+    "Ruff"
+)
+
+# Iterate over the commands
+for ((i=0; i<${#commands[@]}; i++)); do
+    ${commands[i]}
+    result=$?
+    if [ "$result" == "0" ]; then
+        echo "${messages[i]} OK"
+    elif [ "$result" == "1" ]; then
+        echo "${messages[i]} failed"
+        exit 1
+    fi
+done
