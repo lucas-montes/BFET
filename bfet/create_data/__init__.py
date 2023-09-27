@@ -19,6 +19,7 @@ from .create_data import (
 )
 
 from .data_combination import (
+    create_possibilities,
     create_all_combinations,
     cast_all_combinations,
     Variations,
@@ -26,6 +27,7 @@ from .data_combination import (
 )
 
 __all__ = [
+    "create_possibilities",
     "create_all_combinations",
     "cast_all_combinations",
     "Variations",

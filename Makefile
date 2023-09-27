@@ -50,8 +50,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## fix style
-	ruff ${APPS_FOLDERS}
-	black ${APPS_FOLDERS}
+	black ${APPS_FOLDERS} && ruff ${APPS_FOLDERS} --fix
 
 check: ## check style
 	twine check dist/*

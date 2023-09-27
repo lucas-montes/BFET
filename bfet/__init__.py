@@ -1,6 +1,7 @@
 from .create_data import (
     create_all_combinations,
     cast_all_combinations,
+    create_possibilities,
     Variations,
     Combinator,
     create_random_bool,
@@ -34,6 +35,7 @@ __all__ = [
     "PydanticTestingModel",
     "create_all_combinations",
     "cast_all_combinations",
+    "create_possibilities",
     "Variations",
     "Combinator",
     "create_random_string",
