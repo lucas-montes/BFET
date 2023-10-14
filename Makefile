@@ -59,7 +59,7 @@ check: ## check style
 	mypy ${APPS_FOLDERS}
 
 test: ## run tests quickly with the default Python
-	pytest -vv -x
+	pytest $(arg) -vv -s
 
 test-all: ## run tests on every Python version with tox
 	tox
@@ -110,4 +110,4 @@ dist: clean ## builds source and wheel package
 	ls -l dist
 
 install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+	pip install -e .

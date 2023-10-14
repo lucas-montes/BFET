@@ -4,7 +4,7 @@ from itertools import chain, product
 
 import pytest
 
-from bfet import (
+from bfet.create_data.data_combination import (
     Combinator,
     cast_all_combinations,
     create_all_combinations,

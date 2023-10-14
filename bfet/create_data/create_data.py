@@ -2,7 +2,7 @@ import datetime
 import random
 import string
 import textwrap
-from typing import Dict, Optional
+from typing import Dict, Optional, List, Any
 import uuid
 
 from .constants import LIST_EMAIL_DOMAINS, LOREM_TEXT
@@ -193,7 +193,9 @@ def create_random_positive_integer(
 
 
 def create_random_float(
-    min_value: float = 0, max_value: float = 10000000, after_coma: int = 2
+    min_value: float = 0,
+    max_value: float = 10000000,
+    after_coma: int = 2,
 ) -> float:
     if max_value < min_value:
         min_value += max_value - min_value
@@ -207,16 +209,40 @@ def create_random_float(
 
 
 def create_random_positive_float(
-    min_value: float = 0,
-    max_value: float = 10000000,
+    min_value: float = 0.0,
+    max_value: float = 10000000.0,
     after_coma: int = 2,
 ) -> float:
     return round(random.uniform(min_value, max_value), after_coma)
 
 
 def create_random_negative_float(
-    min_value: float = 0,
-    max_value: float = 10000000,
+    min_value: float = 0.0,
+    max_value: float = 10000000.0,
     after_coma: int = 2,
 ) -> float:
-    return round(random.uniform(min_value, max_value), after_coma) * -1
+    return round(random.uniform(min_value, max_value), after_coma) * -1.0
+
+
+def create_random_list(
+    min_length: int = 0,
+    max_length: int = 10000,
+    types: Optional[List[str]] = None,
+) -> List[Any]:
+    types = types or ["any"]
+    return [_get_data_by_type(random.choice(types)) for _ in range(min_length, max_length)]
+
+
+def _get_data_by_type(data_type: str, **kwargs) -> Any:
+    data_generator = {
+        "datetime": create_random_datetime,
+        "date": create_random_date,
+        "time": create_random_hour,
+        "float": create_random_float,
+        "int": create_random_integer,
+        "str": create_random_string,
+        "dict": create_random_json,
+        "bool": create_random_bool,
+    }
+    data_generator["any"] = random.choice(list(data_generator.values()))
+    return data_generator[data_type](**kwargs)  # type: ignore

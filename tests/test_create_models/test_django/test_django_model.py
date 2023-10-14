@@ -1,6 +1,6 @@
 import pytest
 
-from bfet import DjangoTestingModel
+from bfet.create_models.django_model import DjangoTestingModel
 
 from ...django_examples.models import FKTestingModel
 

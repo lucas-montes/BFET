@@ -1,7 +1,10 @@
-from typing import Any, Dict, List, Tuple, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
+
+from ..create_data.map_types.type_to_data import map_type_to_data
 
 from pydantic import BaseModel
+from pydantic.fields import FieldInfo
 
 T = BaseModel
 # T = TypeVar("T")
@@ -9,7 +12,7 @@ T = BaseModel
 
 class PydanticTestingModel:
     def __init__(self, model: Type[T], fill_all_fields: bool) -> None:
-        self.model = model
+        self.model: Type[T] = model
         self.fill_all_fields = fill_all_fields
 
     @classmethod
@@ -21,7 +24,7 @@ class PydanticTestingModel:
 
         Parameters
         ----------
-            model : Type
+            model : Type[T]
                 The model that we want to use to create the instances from
 
             fill_all_fields : bool
@@ -33,7 +36,7 @@ class PydanticTestingModel:
 
         Returns
         -------
-            Type
+            T
                 An object with the passed model
         """
         return cls(model, fill_all_fields)._create_model(kwargs)
@@ -50,7 +53,7 @@ class PydanticTestingModel:
 
         Parameters
         ----------
-            model : Type
+            model : Type[T]
                 The model that we want to use to create the instances from
 
             number_of_models : int
@@ -65,19 +68,29 @@ class PydanticTestingModel:
 
         Returns
         -------
-            List[Type]
+            List[T]
                 A list of models
         """
         creator = cls(model, fill_all_fields)
         return [creator._create_model(kwargs) for _ in range(number_of_models)]
 
-    def _create_model(self, kwargs: Dict[str, Any]) -> Any:
+    def _create_model(self, kwargs: Dict[str, Any]) -> T:
         fields = self.model.model_fields.items()
-        data = dict(self._inspect_field(field) for field in fields)
+        data = dict(self._create_field(name, info, kwargs.get(name)) for name, info in fields)
         return self.model(**data)
 
-    def _inspect_field(self, kwargs: Dict[str, Any]) -> Tuple[str, Any]:
-        return
+    def _create_field(
+        self,
+        name: str,
+        info: FieldInfo,
+        default_data: Optional[Any],
+    ) -> Tuple[str, Any]:
+        return info.alias or name, default_data or self._inspect_field(info)
 
-    def _match_field_type(self, field_type: str) -> Dict:
-        return field_type
+    def _inspect_field(self, info: FieldInfo) -> Any:
+        if info.default_factory:
+            return info.default_factory()
+        return info.default or self._get_field_type_data(str(info.annotation))
+
+    def _get_field_type_data(self, field_type: str) -> Dict:
+        return map_type_to_data(field_type)

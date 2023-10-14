@@ -3,7 +3,8 @@
 import datetime
 import uuid
 
-from bfet import (
+from bfet.create_data.create_data import (
+    create_random_list,
     create_random_bool,
     create_random_date,
     create_random_datetime,
@@ -22,6 +23,10 @@ from bfet import (
     create_random_url,
     create_random_uuid,
 )
+
+
+def test_create_random_list():
+    assert isinstance((create_random_list()), list)
 
 
 def test_create_random_string():

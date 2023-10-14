@@ -1,4 +1,3 @@
-# flake8: noqa
 LIST_EMAIL_DOMAINS = [
     "gmail.com",
     "yahoo.com",

@@ -1,6 +1,6 @@
 import types
 
-from bfet.automatic_tests.create_tests import CreateTests
+from bfet.create_tests.create_tests import CreateTests
 
 
 class DummyObject:
