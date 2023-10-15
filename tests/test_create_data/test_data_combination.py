@@ -1,15 +1,17 @@
+from __future__ import annotations
+
 from collections import deque
-from typing import Any, List
 from itertools import chain, product
+from typing import Any, List
 
 import pytest
 
 from bfet.create_data.data_combination import (
     Combinator,
+    Variations,
     cast_all_combinations,
     create_all_combinations,
     create_possibilities,
-    Variations,
 )
 
 

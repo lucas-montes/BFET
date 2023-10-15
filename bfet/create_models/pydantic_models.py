@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 from typing import Any, Dict, List, Optional, Tuple, Type
-
-
-from ..create_data.map_types.type_to_data import map_type_to_data
 
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
+
+from ..create_data.map_types.type_to_data import map_type_to_data
 
 T = BaseModel
 # T = TypeVar("T")

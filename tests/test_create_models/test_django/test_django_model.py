@@ -1,8 +1,9 @@
+from __future__ import annotations
+
 import pytest
 
-from bfet.create_models.django_model import DjangoTestingModel
-
 from ...django_examples.models import FKTestingModel
+from bfet.create_models.django_model import DjangoTestingModel
 
 
 @pytest.mark.django_db

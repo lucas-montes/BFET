@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 LIST_EMAIL_DOMAINS = [
     "gmail.com",
     "yahoo.com",

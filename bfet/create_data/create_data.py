@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import datetime
 import random
 import string
 import textwrap
-from typing import Dict, Optional, List, Any
+from typing import Any, Dict, List, Optional
 import uuid
 
 from .constants import LIST_EMAIL_DOMAINS, LOREM_TEXT

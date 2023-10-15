@@ -1,9 +1,9 @@
+from __future__ import annotations
+
 from unittest.mock import MagicMock, patch
 
-from bfet.create_models.pydantic_models import PydanticTestingModel
-
 from ...pydantic_example import BaseTestModel
-
+from bfet.create_models.pydantic_models import PydanticTestingModel
 
 TestModel = PydanticTestingModel(model=BaseTestModel, fill_all_fields=False)
 
@@ -36,14 +36,14 @@ def test_create_field_alias():
     assert result == "DefaultValueAlias", "default"
 
 
-@patch("bfet.testing_models.pydantic_models.PydanticTestingModel._inspect_field")
+@patch("bfet.create_models.pydantic_models.PydanticTestingModel._inspect_field")
 def test_create_field(inspect_field: MagicMock):
     field = dict(BaseTestModel.model_fields.items())["id"]
     assert TestModel._create_field("name", field, None) == "name", inspect_field.return_value
     inspect_field.assert_called_once_with(field)
 
 
-@patch("bfet.testing_models.pydantic_models.PydanticTestingModel._get_field_type_data")
+@patch("bfet.create_models.pydantic_models.PydanticTestingModel._get_field_type_data")
 def test_inspect_field_use_random_data(get_field_type_data: MagicMock):
     field = dict(BaseTestModel.model_fields.items())["id"]
     result = TestModel._inspect_field(field)
@@ -51,7 +51,7 @@ def test_inspect_field_use_random_data(get_field_type_data: MagicMock):
     assert result == get_field_type_data.return_value
 
 
-@patch("bfet.testing_models.pydantic_models.PydanticTestingModel._get_field_type_data")
+@patch("bfet.create_models.pydantic_models.PydanticTestingModel._get_field_type_data")
 def test_inspect_field_use_fields_default(get_field_type_data: MagicMock):
     field = dict(BaseTestModel.model_fields.items())["default_value"]
     result = TestModel._inspect_field(field)
@@ -59,7 +59,7 @@ def test_inspect_field_use_fields_default(get_field_type_data: MagicMock):
     assert result == 33
 
 
-@patch("bfet.testing_models.pydantic_models.PydanticTestingModel._get_field_type_data")
+@patch("bfet.create_models.pydantic_models.PydanticTestingModel._get_field_type_data")
 def test_inspect_field_use_fields_default_factory(get_field_type_data: MagicMock):
     field = dict(BaseTestModel.model_fields.items())["default_function"]
     result = TestModel._inspect_field(field)

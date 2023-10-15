@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from datetime import datetime
 
-from pydantic import BaseModel, PositiveInt, Field
+from pydantic import BaseModel, Field, PositiveInt
 
 
 def default_factory():

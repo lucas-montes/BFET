@@ -1,4 +1,6 @@
 """Command line for bfet"""
+from __future__ import annotations
+
 import argparse
 from typing import Dict, Union
 

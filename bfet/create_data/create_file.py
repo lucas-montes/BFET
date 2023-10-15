@@ -1,8 +1,7 @@
 from __future__ import annotations
+
 import csv
-
 from typing import Any, Dict
-
 
 from .create_data import _get_data_by_type
 

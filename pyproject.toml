@@ -4,12 +4,11 @@ preview = true
 line-length = 100
 
 [tool.ruff]
-# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default, flake8-bugbear (`B`) rules.
-select = ["E", "F", "B"]
+select = ["F", "E", "B", "W", "I", "N", "C90", ]
 ignore = []
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
-fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+fixable = ["ALL"]
 unfixable = []
 
 # Exclude a variety of commonly ignored directories.
@@ -55,3 +54,15 @@ docstring-quotes = "double"
 
 [tool.ruff.pyflakes]
 extend-generics = ["django.db.models.ForeignKey"]
+
+[tool.ruff.isort]
+case-sensitive = true
+constants = ["constant"]
+force-sort-within-sections = true
+force-wrap-aliases = true
+combine-as-imports = true
+#known-first-party = ["bfet"]
+known-local-folder = ["bfet"]
+#lines-between-types = 1
+required-imports = ["from __future__ import annotations"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .create_tests import CreateTests
 
 

@@ -1,4 +1,6 @@
 # Numeric Types
+from __future__ import annotations
+
 INT = "int"
 FLOAT = "float"
 COMPLEX = "complex"

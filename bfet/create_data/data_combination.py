@@ -1,18 +1,19 @@
+from __future__ import annotations
+
 from enum import Enum
 from itertools import chain, combinations, product
 from random import choices, randrange
-
 from typing import (
+    Any,
     Callable,
     Deque,
+    Dict,
     FrozenSet,
     Iterable,
     List,
     Optional,
     Set,
     Tuple,
-    Any,
-    Dict,
 )
 
 AnySizedIterable = List[Any] | Set[Any] | FrozenSet[Any] | Tuple[Any] | Deque[Any]

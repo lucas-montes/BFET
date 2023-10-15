@@ -2,20 +2,22 @@
 
 """The setup script."""
 
+from pathlib import Path
 from setuptools import setup, find_packages
 
-with open("README.rst") as readme_file:
-    readme = readme_file.read()
-
-with open("HISTORY.rst") as history_file:
-    history = history_file.read()
+history = Path("HISTORY.rst").read_text()
 
 requirements = [
     "Jinja2",
+    "requests",
+    "deepdiff[optimize]",
+    "types-requests",
 ]
 
 test_requirements = [
-    "pytest>=3",
+    "pytest",
+    "django",
+    "pydantic",
 ]
 
 setup(
@@ -45,7 +47,7 @@ setup(
     },
     install_requires=requirements,
     license="MIT license",
-    long_description=readme,
+    long_description=Path("README.rst").read_text(),
     long_description_content_type="text/x-rst",
     include_package_data=True,
     keywords="bfet",

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
+from __future__ import annotations
 
 import datetime
 import uuid
 
 from bfet.create_data.create_data import (
-    create_random_list,
     create_random_bool,
     create_random_date,
     create_random_datetime,
@@ -13,6 +13,7 @@ from bfet.create_data.create_data import (
     create_random_hour,
     create_random_integer,
     create_random_json,
+    create_random_list,
     create_random_negative_float,
     create_random_negative_integer,
     create_random_positive_float,

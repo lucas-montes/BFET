@@ -53,10 +53,10 @@ lint: ## fix style
 	black ${APPS_FOLDERS} && ruff ${APPS_FOLDERS} --fix
 
 check: ## check style
-	twine check dist/*
-	ruff ${APPS_FOLDERS} check
+	ruff ${APPS_FOLDERS}
 	black --check ${APPS_FOLDERS} 
 	mypy ${APPS_FOLDERS}
+	twine check dist/*
 
 test: ## run tests quickly with the default Python
 	pytest $(arg) -vv -s
